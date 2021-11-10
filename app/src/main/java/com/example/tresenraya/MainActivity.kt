@@ -8,10 +8,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import com.google.android.material.internal.ContextUtils.getActivity
-import java.lang.Integer.parseInt
 import java.util.*
-import android.R.array
 import android.os.Handler
 import android.os.Looper
 
@@ -69,22 +66,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun machine_turn(){
-        check_turno()
+        //check_turno()
 
         Log.d("Waiting", " for machine turn to end.")
         //changeInputPermission()
 
         Handler(Looper.getMainLooper()).postDelayed({
+            var machine_pos: Int
 
-            enable_py = false
-            var randomNumber: Int
+            do {
+                enable_py = false
 
-            do{
-                randomNumber = Random().nextInt(9) // random number
-            //}while (tablero.containsKey(randomNumber)) //not equal to a number already set in tablero
-            }while ( !is_position_empty(randomNumber) )
 
-            buttonSelected(randomNumber)
+                do{
+                    machine_pos = Random().nextInt(9) // random number
+                //}while (tablero.containsKey(randomNumber)) //not equal to a number already set in tablero
+                }while ( !is_position_empty(machine_pos) )
+
+                val coords = get_tablero_position(machine_pos)
+                val x = coords.first
+                val y = coords.second
+
+            } while (
+                checkJugadaFavorable(Pair(x, y)) != Pair(x, y)
+            )
+
+            buttonSelected(machine_pos)
             Log.d("End", " machine turn ended.")
             mc_turn_end = true
 
@@ -177,6 +184,11 @@ class MainActivity : AppCompatActivity() {
         _tablero[x][y] = symbol_player
         Log.d("added", "Id:"+id+" -> pos: "+x+","+y )
 
+        if ( checkWinnerPlay(get_tablero_position(id), symbol_player) ){
+            winner = players[turn_number]
+            end_game()
+        }
+
         //btn.setEnabled(false)
         if(turn_number == 0){
             btn.setBackgroundColor(Color.GREEN)
@@ -187,6 +199,8 @@ class MainActivity : AppCompatActivity() {
 
         turn_number = (turn_number + 1) % 2
         casillasVacias--
+
+        check_turno()
     }
 
     fun is_position_empty(id:Int): Boolean{
@@ -238,8 +252,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
     fun end_game(){
         if(winner != ""){
             Toast.makeText(applicationContext, "GAME ENDED, winner is "+ winner, Toast.LENGTH_SHORT).show()
@@ -278,27 +290,25 @@ class MainActivity : AppCompatActivity() {
 
         //check horizontals
         if( areEqual(_tablero[row][0], _tablero[row][1], _tablero[row][2], symbol) ) {
-            Toast.makeText(applicationContext, "horizontal winner,"+row+","+column, Toast.LENGTH_SHORT).show()
+            //Toast.makeText(applicationContext, "horizontal winner,"+row+","+column, Toast.LENGTH_SHORT).show()
+            return true
         }
         //check verticals
         if( areEqual( _tablero[0][column], _tablero[1][column], _tablero[2][column],symbol ) ){
-            Toast.makeText(applicationContext, "vertical winner,"+row+","+column, Toast.LENGTH_SHORT).show()
-
+            //Toast.makeText(applicationContext, "vertical winner,"+row+","+column, Toast.LENGTH_SHORT).show()
+            return true
         }
 
         //check diagonals
-        /*
-        if(
-          (_tablero[0][0] == _tablero[1][1] &&
-           _tablero[0][0] == _tablero[2][2])
-          ||
-          (_tablero[0][2] == _tablero[1][1] &&
-           _tablero[0][2] == _tablero[2][0])
+        if( areEqual( _tablero[0][0], _tablero[1][1], _tablero[2][2], symbol  )
+            ||
+            areEqual( _tablero[0][2], _tablero[1][1], _tablero[2][0], symbol  )
         ){
-            Toast.makeText(applicationContext, "diagonal winner,", Toast.LENGTH_SHORT).show()
-            return true;
+            Toast.makeText(applicationContext,
+                "winner ,diagonal",
+                Toast.LENGTH_SHORT).show()
+            return true
         }
-         */
 
         return false
     }
@@ -317,9 +327,13 @@ class MainActivity : AppCompatActivity() {
 
     fun areEqual(a:String?,b:String?,c:String?, symbol: String): Boolean{
 
-        if(symbol in listOf(a,b,c)){
+        /*if(symbol in listOf(a,b,c)){
             return true
+        }*/
+        if( symbol == a && a == b && b == c){
+            return  true
         }
+
         return false
     }
 
