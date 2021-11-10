@@ -150,11 +150,14 @@ class MainActivity : AppCompatActivity() {
         symbol_player = if(turn_number == 0) "X" else "O"
 
         tablero.put(id,symbol_player)
-        
-
         Log.d("added", "Id:"+id+" -> "+tablero[id].toString())
 
-
+        var posicion_x_y = get_tablero_position(id);
+        var x = posicion_x_y.first
+        var y = posicion_x_y.second
+        _tablero[x][y] = symbol_player
+        Log.d("added", "Id:"+id+" -> pos: "+x+","+y )
+        
         //btn.setEnabled(false)
         if(turn_number == 0){
             btn.setBackgroundColor(Color.GREEN)
@@ -209,6 +212,25 @@ class MainActivity : AppCompatActivity() {
     fun checkWinner(): String{
         winner = players[turn_number]
         return winner
+    }
+
+    fun get_tablero_position(casilla: Int) : Pair<Int, Int>{
+        //primera casilla, ultima fila [2][0]
+
+        //var nuevo_array = Pair()
+        var cont:Int = 0
+
+        for(index_a in 0 until filas){
+            for(index_b in 0 until columnas){
+
+                if(cont == casilla){
+                    //Log.d("POSITION", "$index_a,$index_b")
+                    return Pair(index_a,index_b)
+                }
+                cont++
+            }
+        }
+        return Pair(0,0)
     }
 
     fun reset_tablero(){
