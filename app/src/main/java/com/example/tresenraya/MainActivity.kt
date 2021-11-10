@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private var mc_turn_end : Boolean = false
     private var enable_py: Boolean = true
 
+    private var game_ended: Boolean = false
     private var winner: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +50,11 @@ class MainActivity : AppCompatActivity() {
         init_tablero()
         reset_tablero()
         turno_inicial()
+
+
+        /*var pair : Pair<Int,Int> = Pair(2,2)
+        var res = get_casilla_id(pair)
+        Toast.makeText(applicationContext, "Id of pos 2,2 :$res", Toast.LENGTH_SHORT).show()*/
     }
 
     //--------------TURNOS-----------------
@@ -116,11 +122,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun cambio_turno() {
-        if (turn_number == 1) {
-            machine_turn()
-        } else {
-            player_turn()
+        if(!game_ended) {
+            if (turn_number == 1) {
+                machine_turn()
+            } else {
+                player_turn()
+            }
         }
+
     }
     //-------------------------------------
 
@@ -144,7 +153,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun handleButtonClick(view: View) {
-        if(enable_py){
+        if(enable_py && !game_ended){
             hacer_jugada(view as Button)
             Log.d("End", " player turn ended.")
             //mc_turn_end = false
@@ -253,6 +262,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun end_game(){
+        game_ended = true
         if(winner != ""){
             Toast.makeText(applicationContext, "GAME ENDED, winner is "+ winner, Toast.LENGTH_SHORT).show()
         }else{
@@ -282,6 +292,25 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return Pair(0,0)
+    }
+
+    fun get_casilla_id(posicion : Pair<Int, Int>) : Int{
+        //primera casilla, ultima fila [2][0]
+
+        //var nuevo_array = Pair()
+        var cont:Int = 0
+
+        for(index_a in 0 until filas){
+            for(index_b in 0 until columnas){
+
+                if(posicion.first == index_a && posicion.second == index_b){
+                    //Log.d("POSITION", "$index_a,$index_b")
+                    return cont
+                }
+                cont++
+            }
+        }
+        return cont
     }
 
     fun checkWinnerPlay(posicion : Pair<Int,Int>, symbol : String): Boolean{
@@ -339,6 +368,7 @@ class MainActivity : AppCompatActivity() {
 
     fun reset_tablero(){
         enable_py = true
+        game_ended = false
         turn_number = 0
         for (i in 1..totalCasillas){
             var btn = findViewById<Button>(resources.getIdentifier("button$i","id",packageName))
