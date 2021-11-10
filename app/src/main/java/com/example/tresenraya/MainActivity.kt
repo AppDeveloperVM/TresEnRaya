@@ -67,6 +67,7 @@ class MainActivity : AppCompatActivity() {
 
     fun machine_turn(){
         //check_turno()
+        enable_py = false
 
         Log.d("Waiting", " for machine turn to end.")
         //changeInputPermission()
@@ -75,7 +76,6 @@ class MainActivity : AppCompatActivity() {
             var machine_pos: Int
 
             do {
-                enable_py = false
 
 
                 do{
@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity() {
                 cambio_turno()
             }
 
-        }, 400) // seconds
+        }, 1000) // seconds
 
         //changeInputPermission()
     }
