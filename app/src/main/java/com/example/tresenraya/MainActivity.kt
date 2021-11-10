@@ -21,7 +21,8 @@ class MainActivity : AppCompatActivity() {
     private val filas = 3
     private val columnas = 3
     private val totalCasillas : Int = filas * columnas
-    private var tablero = mutableMapOf<Int,String>()
+    private var casillasVacias : Int = totalCasillas
+    //private var tablero = mutableMapOf<Int,String>()
     private var _tablero= Array(filas) { arrayOfNulls<String>(columnas) } //Array(filas) { Array<String>(size = columnas) }
 
     private val players = arrayOf("Jugador", "Máquina")
@@ -74,18 +75,17 @@ class MainActivity : AppCompatActivity() {
 
             do{
                 randomNumber = Random().nextInt(9) // random number
-            }while (tablero.containsKey(randomNumber)) //not equal to a number already set in tablero
+            //}while (tablero.containsKey(randomNumber)) //not equal to a number already set in tablero
+            }while ( !is_position_empty(randomNumber) )
 
             buttonSelected(randomNumber)
             Log.d("End", " machine turn ended.")
             mc_turn_end = true
 
-            if(tablero.size < 9) {
+            //if(_tablero.size < 9) {
+            if(casillasVacias > 0) {
                 cambio_turno()
             }
-            /*else{
-                end_game()
-            }*/
 
         }, 400) // seconds
 
@@ -93,10 +93,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun check_turno(){
+        if(casillasVacias == 0){
+            end_game()
+        }
+
         actual_player = players[turn_number] //
-        //Log.d("Id de Turno", "$turn_number")
         Log.d("Turno", "$actual_player")
-        turntxt.text = actual_player.toString()
+        turntxt.text = actual_player
     }
 
     fun cambio_turno() {
@@ -132,7 +135,8 @@ class MainActivity : AppCompatActivity() {
             hacer_jugada(view as Button)
             Log.d("End", " player turn ended.")
             //mc_turn_end = false
-            if(tablero.size < 9) {
+            //if(tablero.size < 9) {
+            if(casillasVacias > 0){
                 cambio_turno()
             }
         }
@@ -149,8 +153,8 @@ class MainActivity : AppCompatActivity() {
         var symbol_player: String
         symbol_player = if(turn_number == 0) "X" else "O"
 
-        tablero.put(id,symbol_player)
-        Log.d("added", "Id:"+id+" -> "+tablero[id].toString())
+        //tablero.put(id,symbol_player)
+        //Log.d("added", "Id:"+id+" -> "+tablero[id].toString())
 
         var posicion_x_y = get_tablero_position(id);
         var x = posicion_x_y.first
@@ -167,6 +171,7 @@ class MainActivity : AppCompatActivity() {
         btn.setEnabled(false)
 
         turn_number = (turn_number + 1) % 2
+        casillasVacias--
     }
 
     fun is_position_empty(id:Int): Boolean{
@@ -178,13 +183,11 @@ class MainActivity : AppCompatActivity() {
         val pos_value = _tablero[x][y]
         Log.d("Is pos empty? pos", "$id: $pos_value , coords: $x, $y")
 
-
         if( pos_value.isNullOrBlank() ){
             return true
-        }else{
-            return false
         }
 
+        return false
     }
 
     fun findIndex(arr: Array<Int>, item: Int): Int {
@@ -261,7 +264,7 @@ class MainActivity : AppCompatActivity() {
     fun checkWinnerPlay(posicion : Pair<Int,Int>, symbol : String): Boolean{
         var row = posicion.first
         var column = posicion.second
-        
+
         //check horizontals
         if( areEqual(_tablero[row][0], _tablero[row][1], _tablero[row][2], symbol) ) {
             Toast.makeText(applicationContext, "horizontal winner,"+row+","+column, Toast.LENGTH_SHORT).show()
@@ -306,8 +309,10 @@ class MainActivity : AppCompatActivity() {
             btn.setBackgroundColor(Color.GRAY)
             btn.text = " "
 
-            tablero = mutableMapOf<Int,String>()
+            //tablero = mutableMapOf<Int,String>()
         }
+        _tablero = Array(3) { kotlin.arrayOfNulls<kotlin.String>(3) }
+        casillasVacias = totalCasillas
     }
 
 
