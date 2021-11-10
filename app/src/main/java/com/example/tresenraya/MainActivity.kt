@@ -157,7 +157,7 @@ class MainActivity : AppCompatActivity() {
         var y = posicion_x_y.second
         _tablero[x][y] = symbol_player
         Log.d("added", "Id:"+id+" -> pos: "+x+","+y )
-        
+
         //btn.setEnabled(false)
         if(turn_number == 0){
             btn.setBackgroundColor(Color.GREEN)
@@ -166,7 +166,29 @@ class MainActivity : AppCompatActivity() {
         }
         btn.setEnabled(false)
 
-        turn_number++
+        turn_number = (turn_number + 1) % 2
+    }
+
+    fun is_position_empty(id:Int): Boolean{
+        val position = get_tablero_position(id)
+
+        val x = position.first
+        val y = position.second
+
+        val pos_value = _tablero[x][y]
+        Log.d("Is pos empty? pos", "$id: $pos_value , coords: $x, $y")
+
+
+        if( pos_value.isNullOrBlank() ){
+            return true
+        }else{
+            return false
+        }
+
+    }
+
+    fun findIndex(arr: Array<Int>, item: Int): Int {
+        return arr.indexOf(item)
     }
 
     //disable/enable inputs
@@ -205,8 +227,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun end_game(){
-
-        Toast.makeText(applicationContext, "GAME ENDED, winner is "+ checkWinner(), Toast.LENGTH_SHORT).show()
+        if(winner != ""){
+            Toast.makeText(applicationContext, "GAME ENDED, winner is "+ winner, Toast.LENGTH_SHORT).show()
+        }else{
+            Toast.makeText(applicationContext, "GAME ENDED, NO WINNER", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun checkWinner(): String{
@@ -231,6 +256,45 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return Pair(0,0)
+    }
+
+    fun checkWinnerPlay(posicion : Pair<Int,Int>, symbol : String): Boolean{
+        var row = posicion.first
+        var column = posicion.second
+        
+        //check horizontals
+        if( areEqual(_tablero[row][0], _tablero[row][1], _tablero[row][2], symbol) ) {
+            Toast.makeText(applicationContext, "horizontal winner,"+row+","+column, Toast.LENGTH_SHORT).show()
+        }
+        //check verticals
+        if( areEqual( _tablero[0][column], _tablero[1][column], _tablero[2][column],symbol ) ){
+            Toast.makeText(applicationContext, "vertical winner,"+row+","+column, Toast.LENGTH_SHORT).show()
+
+        }
+
+        //check diagonals
+        /*
+        if(
+          (_tablero[0][0] == _tablero[1][1] &&
+           _tablero[0][0] == _tablero[2][2])
+          ||
+          (_tablero[0][2] == _tablero[1][1] &&
+           _tablero[0][2] == _tablero[2][0])
+        ){
+            Toast.makeText(applicationContext, "diagonal winner,", Toast.LENGTH_SHORT).show()
+            return true;
+        }
+         */
+
+        return false
+    }
+
+    fun areEqual(a:String?,b:String?,c:String?, symbol: String): Boolean{
+
+        if(symbol in listOf(a,b,c)){
+            return true
+        }
+        return false
     }
 
     fun reset_tablero(){
