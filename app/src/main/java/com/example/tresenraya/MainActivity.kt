@@ -48,6 +48,12 @@ class MainActivity : AppCompatActivity() {
         start_game()
     }
 
+    fun start_game(){
+        init_tablero()
+        reset_tablero()
+        turno_inicial()
+    }
+
     //--------------TURNOS-----------------
     fun turno_inicial() {
         turn_number = 0;
@@ -159,6 +165,15 @@ class MainActivity : AppCompatActivity() {
         var posicion_x_y = get_tablero_position(id);
         var x = posicion_x_y.first
         var y = posicion_x_y.second
+
+        if(turn_number == 1) {
+            val favorable_pos = checkJugadaFavorable(Pair(x, y))
+            if (favorable_pos.first != x && favorable_pos.second != y) {
+                x = favorable_pos.first
+                y = favorable_pos.second
+            }
+        }
+
         _tablero[x][y] = symbol_player
         Log.d("added", "Id:"+id+" -> pos: "+x+","+y )
 
@@ -223,11 +238,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun start_game(){
-        init_tablero()
-        reset_tablero()
-        turno_inicial()
-    }
+
 
     fun end_game(){
         if(winner != ""){
@@ -290,6 +301,18 @@ class MainActivity : AppCompatActivity() {
          */
 
         return false
+    }
+
+    fun checkJugadaFavorable(posicion : Pair<Int,Int>) : Pair<Int, Int>{
+        var x = posicion.first
+        var y = posicion.second
+
+        if( _tablero[1][1].isNullOrEmpty() ){
+            return Pair(1,1)
+        }
+
+
+        return Pair(x,y)
     }
 
     fun areEqual(a:String?,b:String?,c:String?, symbol: String): Boolean{
