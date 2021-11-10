@@ -13,23 +13,29 @@ import java.lang.Integer.parseInt
 import java.util.*
 import android.R.array
 import android.os.Handler
+import android.os.Looper
 
 
 class MainActivity : AppCompatActivity() {
 
-    private val totalCasillas : Int = 9
+    private val filas = 3
+    private val columnas = 3
+    private val totalCasillas : Int = filas * columnas
     private var tablero = mutableMapOf<Int,String>()
+    private var _tablero= Array(filas) { arrayOfNulls<String>(columnas) } //Array(filas) { Array<String>(size = columnas) }
+
     private val players = arrayOf("Jugador", "Máquina")
-    private var winner: String = ""
     private lateinit var turntxt: TextView // TURNO
     private var turn_number: Int = 0
     private var actual_player: String = "";
 
     private var buttons: List<Button> = ArrayList()
-    //reset button
     private lateinit var reset: Button
+
     private var mc_turn_end : Boolean = false
     private var enable_py: Boolean = true
+
+    private var winner: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,9 +67,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("Waiting", " for machine turn to end.")
         //changeInputPermission()
 
-        val handler = Handler()
-        handler.postDelayed(Runnable {
-            // yourMethod();
+        Handler(Looper.getMainLooper()).postDelayed({
 
             enable_py = false
             var randomNumber: Int
@@ -78,9 +82,10 @@ class MainActivity : AppCompatActivity() {
 
             if(tablero.size < 9) {
                 cambio_turno()
-            }else{
-                end_game()
             }
+            /*else{
+                end_game()
+            }*/
 
         }, 400) // seconds
 
@@ -88,18 +93,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun check_turno(){
-        if( turn_number >= 2){
-            turn_number = 0
-        }
-
         actual_player = players[turn_number] //
-        Log.d("Id de Turno", "$turn_number")
+        //Log.d("Id de Turno", "$turn_number")
         Log.d("Turno", "$actual_player")
         turntxt.text = actual_player.toString()
     }
 
     fun cambio_turno() {
-        if (!mc_turn_end) {
+        if (turn_number == 1) {
             machine_turn()
         } else {
             player_turn()
@@ -122,48 +123,35 @@ class MainActivity : AppCompatActivity() {
         }
 
         hacer_jugada(btn_selected)
-        mc_turn_end = true
-        check_turno()
+        /*mc_turn_end = true
+        check_turno()*/
     }
 
     fun handleButtonClick(view: View) {
-        /*with (view as Button) {
-            Log.d("TAG", "$text, $id")
-            check_turno()
-
-            hacer_jugada(Button)
-        }
-         */
         if(enable_py){
             hacer_jugada(view as Button)
-
             Log.d("End", " player turn ended.")
-            mc_turn_end = false
-
-            if(tablero.size < 9){
-                check_turno()
+            //mc_turn_end = false
+            if(tablero.size < 9) {
                 cambio_turno()
-            }else{
-                end_game()
             }
-
         }
-
     }
 
     fun hacer_jugada(btn: Button){
-
         //var id_b = getResources().getIdentifier("button"+ , "id", getPackageName());
         var btn_id = btn.getTag().toString()
         var id:Int = Integer.parseInt(btn_id)
         Log.d("Id", "$btn_id")
 
-
         //id de celda
         //x per player, o per machine
         var symbol_player: String
         symbol_player = if(turn_number == 0) "X" else "O"
+
         tablero.put(id,symbol_player)
+        
+
         Log.d("added", "Id:"+id+" -> "+tablero[id].toString())
 
 
