@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var turntxt: TextView // TURNO
     private var turn_number: Int = 0
     private var actual_player: String = "";
+    private lateinit var symbol_player: String
 
     private var buttons: List<Button> = ArrayList()
     private lateinit var reset: Button
@@ -51,6 +52,8 @@ class MainActivity : AppCompatActivity() {
         reset_tablero()
         turno_inicial()
 
+        //'X' per player, 'O' per machine
+        symbol_player = if(turn_number == 0) "X" else "O"
 
         /*var pair : Pair<Int,Int> = Pair(2,2)
         var res = get_casilla_id(pair)
@@ -80,6 +83,8 @@ class MainActivity : AppCompatActivity() {
 
         Handler(Looper.getMainLooper()).postDelayed({
             var machine_pos: Int
+            val x : Int = 0
+            val y : Int = 0
 
             do {
 
@@ -87,11 +92,12 @@ class MainActivity : AppCompatActivity() {
                 do{
                     machine_pos = Random().nextInt(9) // random number
                 //}while (tablero.containsKey(randomNumber)) //not equal to a number already set in tablero
-                }while ( !is_position_empty(machine_pos) )
 
-                val coords = get_tablero_position(machine_pos)
-                val x = coords.first
-                val y = coords.second
+                    val coords = get_tablero_position(machine_pos)
+                    val x = coords.first
+                    val y = coords.second
+
+                }while ( !is_position_empty( Pair(x,y) ))
 
             } while (
                 checkJugadaFavorable(Pair(x, y)) != Pair(x, y)
@@ -118,6 +124,8 @@ class MainActivity : AppCompatActivity() {
 
         actual_player = players[turn_number] //
         Log.d("Turno", "$actual_player")
+
+
         turntxt.text = actual_player
     }
 
@@ -171,16 +179,11 @@ class MainActivity : AppCompatActivity() {
         Log.d("Id", "$btn_id")
 
         //id de celda
-        //x per player, o per machine
-        var symbol_player: String
-        symbol_player = if(turn_number == 0) "X" else "O"
-
-        //tablero.put(id,symbol_player)
-        //Log.d("added", "Id:"+id+" -> "+tablero[id].toString())
-
         var posicion_x_y = get_tablero_position(id);
         var x = posicion_x_y.first
         var y = posicion_x_y.second
+
+
 
         if(turn_number == 1) {
             val favorable_pos = checkJugadaFavorable(Pair(x, y))
@@ -212,14 +215,13 @@ class MainActivity : AppCompatActivity() {
         check_turno()
     }
 
-    fun is_position_empty(id:Int): Boolean{
-        val position = get_tablero_position(id)
+    fun is_position_empty(position : Pair<Int,Int>): Boolean{
 
         val x = position.first
         val y = position.second
 
         val pos_value = _tablero[x][y]
-        Log.d("Is pos empty? pos", "$id: $pos_value , coords: $x, $y")
+        Log.d("Is pos empty? pos", "$pos_value , coords: $x, $y")
 
         if( pos_value.isNullOrBlank() ){
             return true
@@ -343,16 +345,34 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun checkJugadaFavorable(posicion : Pair<Int,Int>) : Pair<Int, Int>{
-        var x = posicion.first
-        var y = posicion.second
+        var row = posicion.first
+        var column = posicion.second
 
         if( _tablero[1][1].isNullOrEmpty() ){
             return Pair(1,1)
         }
 
+        //Pair<Int,Int> = Pair(2,2)
+        create_pair(row,0)
 
-        return Pair(x,y)
+        var matches : Int = 0
+        //check horizontals
+        var horizontals = arrayOf(Pair(row, 0), Pair(row, 1), Pair(row,2) )
+        for ( h_coord in horizontals){
+            if (_tablero[h_coord.first][h_coord.second] == symbol_player && is_position_empty){
+                matches++
+            }
+        }
+
+
+        return Pair(row,column)
     }
+
+    /*fun create_pair(vararg numbers: Int) : Pair<Int, Int>{
+
+    }
+
+     */
 
     fun areEqual(a:String?,b:String?,c:String?, symbol: String): Boolean{
 
