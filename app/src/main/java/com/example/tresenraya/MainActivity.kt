@@ -213,6 +213,7 @@ class MainActivity : AppCompatActivity() {
         turn_number = (turn_number + 1) % 2
         casillasVacias--
 
+        if(!game_ended)
         check_turno()
     }
 
@@ -352,6 +353,7 @@ class MainActivity : AppCompatActivity() {
         var row = posicion.first
         var column = posicion.second
 
+        //counterplay
         if( _tablero[1][1].isNullOrEmpty() ){
             return Pair(1,1) //var x : Pair<Int,Int> = Pair(2,2)
         }
@@ -367,16 +369,21 @@ class MainActivity : AppCompatActivity() {
         var matches : Int = 0
 
         for (arr in arr_lists){
-            matches  = 0
+            matches = 0
             for ( coord in arr){
 
                 if (
                     _tablero[coord.first][coord.second] == symbol_player
                 ){
                     matches++ //coincidence dada
-                    if(matches == 3) end_game() //se han dado 3 coincidences
+                    Log.d("MATCH!", "MATCH $matches de $symbol_player")
 
-                    if( is_position_empty(Pair(coord.first,coord.second)) && _tablero[coord.first][coord.second]!=_tablero[row][column] ){
+
+                    //if(matches == 3) end_game() //se han dado 3 coincidences
+
+                    if( is_position_empty(Pair(coord.first,coord.second))
+                        && _tablero[coord.first][coord.second]!=_tablero[row][column]
+                    ){
                         return Pair(coord.first,coord.second)
                     }
 
@@ -400,7 +407,6 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
-
          */
 
         return Pair(row,column)
