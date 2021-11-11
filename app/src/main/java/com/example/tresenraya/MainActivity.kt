@@ -64,7 +64,6 @@ class MainActivity : AppCompatActivity() {
     //--------------TURNOS-----------------
     fun turno_inicial() {
         turn_number = 0;
-        check_turno()
         enable_py = true
         player_turn()
     }
@@ -358,8 +357,6 @@ class MainActivity : AppCompatActivity() {
             return Pair(1,1) //var x : Pair<Int,Int> = Pair(2,2)
         }
 
-
-
         //check horizontals
         var horizontals = arrayOf(Pair(row, 0), Pair(row, 1), Pair(row,2) )
         //check verticals
@@ -377,7 +374,6 @@ class MainActivity : AppCompatActivity() {
                 ){
                     matches++ //coincidence dada
                     Log.d("MATCH!", "MATCH $matches de $symbol_player")
-
 
                     //if(matches == 3) end_game() //se han dado 3 coincidences
 
@@ -444,6 +440,8 @@ class MainActivity : AppCompatActivity() {
         }
         _tablero = Array(3) { kotlin.arrayOfNulls<kotlin.String>(3) }
         casillasVacias = totalCasillas
+
+        check_turno()
     }
 
 }
