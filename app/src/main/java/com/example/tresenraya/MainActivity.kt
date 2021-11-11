@@ -11,6 +11,7 @@ import android.widget.Toast
 import java.util.*
 import android.os.Handler
 import android.os.Looper
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
@@ -86,9 +87,7 @@ class MainActivity : AppCompatActivity() {
             val x : Int = 0
             val y : Int = 0
 
-            do {
-
-
+            //do {
                 do{
                     machine_pos = Random().nextInt(9) // random number
                 //}while (tablero.containsKey(randomNumber)) //not equal to a number already set in tablero
@@ -96,12 +95,11 @@ class MainActivity : AppCompatActivity() {
                     val coords = get_tablero_position(machine_pos)
                     val x = coords.first
                     val y = coords.second
+                    val empty = is_position_empty( Pair(x,y) )
 
-                }while ( !is_position_empty( Pair(x,y) ))
+                    machine_pos = get_casilla_id( checkJugadaFavorable(Pair(x, y)) )
+                }while ( !empty )
 
-            } while (
-                checkJugadaFavorable(Pair(x, y)) != Pair(x, y)
-            )
 
             buttonSelected(machine_pos)
             Log.d("End", " machine turn ended.")
@@ -124,7 +122,7 @@ class MainActivity : AppCompatActivity() {
 
         actual_player = players[turn_number] //
         Log.d("Turno", "$actual_player")
-
+        symbol_player = if(turn_number == 0) "X" else "O"
 
         turntxt.text = actual_player
     }
@@ -184,7 +182,7 @@ class MainActivity : AppCompatActivity() {
         var y = posicion_x_y.second
 
 
-
+        /*
         if(turn_number == 1) {
             val favorable_pos = checkJugadaFavorable(Pair(x, y))
             if (favorable_pos.first != x && favorable_pos.second != y) {
@@ -193,6 +191,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+         */
+
+        symbol_player = if(turn_number == 0) "X" else "O"
         _tablero[x][y] = symbol_player
         Log.d("added", "Id:"+id+" -> pos: "+x+","+y )
 
@@ -331,6 +332,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         //check diagonals
+
         if( areEqual( _tablero[0][0], _tablero[1][1], _tablero[2][2], symbol  )
             ||
             areEqual( _tablero[0][2], _tablero[1][1], _tablero[2][0], symbol  )
@@ -341,6 +343,8 @@ class MainActivity : AppCompatActivity() {
             return true
         }
 
+
+
         return false
     }
 
@@ -349,21 +353,55 @@ class MainActivity : AppCompatActivity() {
         var column = posicion.second
 
         if( _tablero[1][1].isNullOrEmpty() ){
-            return Pair(1,1)
+            return Pair(1,1) //var x : Pair<Int,Int> = Pair(2,2)
         }
 
-        //Pair<Int,Int> = Pair(2,2)
-        create_pair(row,0)
 
-        var matches : Int = 0
+
         //check horizontals
         var horizontals = arrayOf(Pair(row, 0), Pair(row, 1), Pair(row,2) )
+        //check verticals
+        var verticals = arrayOf(Pair(0,column), Pair(1,column), Pair(2,column) )
+        val arr_lists : Array<Array<Pair<Int, Int>>> = arrayOf(arrayOf(*horizontals,*verticals))
+
+        var matches : Int = 0
+
+        for (arr in arr_lists){
+            matches  = 0
+            for ( coord in arr){
+
+                if (
+                    _tablero[coord.first][coord.second] == symbol_player
+                ){
+                    matches++ //coincidence dada
+                    if(matches == 3) end_game() //se han dado 3 coincidences
+
+                    if( is_position_empty(Pair(coord.first,coord.second)) && _tablero[coord.first][coord.second]!=_tablero[row][column] ){
+                        return Pair(coord.first,coord.second)
+                    }
+
+                }
+            }
+
+        }
+
+        /*
         for ( h_coord in horizontals){
-            if (_tablero[h_coord.first][h_coord.second] == symbol_player && is_position_empty){
-                matches++
+
+            if (
+                _tablero[h_coord.first][h_coord.second] == symbol_player
+            ){
+                matches++ //coincidence dada
+                if(matches == 3) end_game() //se han dado 3 coincidences
+
+                if( is_position_empty(Pair(h_coord.first,h_coord.second)) && _tablero[h_coord.first][h_coord.second]!=_tablero[row][column] ){
+                    return Pair(h_coord.first,h_coord.second)
+                }
+
             }
         }
 
+         */
 
         return Pair(row,column)
     }
@@ -402,10 +440,4 @@ class MainActivity : AppCompatActivity() {
         casillasVacias = totalCasillas
     }
 
-
-    fun isSpace(array: Array<Int>): Boolean{
-        for (element in array)
-            if (element == null) return true
-        return false
-    }
 }
