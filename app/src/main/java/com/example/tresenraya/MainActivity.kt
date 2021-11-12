@@ -300,7 +300,6 @@ class MainActivity : AppCompatActivity() {
         if( areEqual( _tablero[0][column], _tablero[1][column], _tablero[2][column],symbol ) ){
             return true
         }
-
         //check diagonals
         if( areEqual( _tablero[0][0], _tablero[1][1], _tablero[2][2], symbol  )
             ||
@@ -335,24 +334,31 @@ class MainActivity : AppCompatActivity() {
 
             for(coords in combinaciones){
                 // 3 positions from combination
+                    //return posicion favorable
 
+                //primero y segundo
                 if( get_coords_value(get_tablero_position(coords[0])) == get_coords_value(get_tablero_position(coords[1])) &&
                     get_coords_value(get_tablero_position(coords[0])) == player /*symbol_player*/
                     && get_coords_value(get_tablero_position(coords[2])) == null
                 ){
+                    //return tercera posicion
                     return get_tablero_position(coords[2])
 
+                //primero y tercero
                 }else if(
                     get_coords_value(get_tablero_position(coords[0])) == get_coords_value(get_tablero_position(coords[2])) &&
                     get_coords_value(get_tablero_position(coords[0])) == player
                     && get_coords_value(get_tablero_position(coords[1])) == null
                 ){
+                    //return segunda posicion
                     return get_tablero_position(coords[1])
 
+                //segundo y tercero
                 }else if(get_coords_value(get_tablero_position(coords[1])) == get_coords_value(get_tablero_position(coords[2])) &&
                     get_coords_value(get_tablero_position(coords[1])) == player
                     && get_coords_value(get_tablero_position(coords[0])) == null
                 ){
+                    //return primera posicion
                     return get_tablero_position(coords[0])
 
                 }
