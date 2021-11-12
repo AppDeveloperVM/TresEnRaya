@@ -82,20 +82,12 @@ class MainActivity : AppCompatActivity() {
         //changeInputPermission()
 
         Handler(Looper.getMainLooper()).postDelayed({
-            var machine_pos: Pair<Int,Int> = Pair(1,1)
+            var machine_pos: Pair<Int,Int> = Pair(0,0)
 
             do{
-                /*
-                machine_pos = Random().nextInt(9) // random number
-                val coords = get_tablero_position(machine_pos)
-                val x = coords.first
-                val y = coords.second
-                val empty = is_position_empty( Pair(x,y) )
-                 */
-
-                var machine_pos =  checkJugadaFavorable()
+                machine_pos =  checkJugadaFavorable()
                 val empty = is_position_empty( machine_pos )
-            }while ( !empty || machine_pos == null )
+            }while ( !empty && machine_pos != null )
 
             var pos = get_casilla_id(machine_pos)
             buttonSelected(pos)
@@ -177,18 +169,6 @@ class MainActivity : AppCompatActivity() {
         var x = posicion_x_y.first
         var y = posicion_x_y.second
 
-
-        /*
-        if(turnNumber == 1) {
-            val favorable_pos = checkJugadaFavorable(Pair(x, y))
-            if (favorable_pos.first != x && favorable_pos.second != y) {
-                x = favorable_pos.first
-                y = favorable_pos.second
-            }
-        }
-
-         */
-
         symbol_player = if(turnNumber == 0) "X" else "O"
         _tablero[x][y] = symbol_player
         Log.d("added", "Id:"+id+" -> pos: "+x+","+y )
@@ -234,7 +214,7 @@ class MainActivity : AppCompatActivity() {
 
         var pos_value = _tablero[x][y]
 
-        if( pos_value.isNullOrBlank() ){
+        if(! pos_value.isNullOrBlank() ){
             return pos_value
         }
 
@@ -352,15 +332,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun checkJugadaFavorable() : Pair<Int, Int>{
-        /*var row = posicion.first
-        var column = posicion.second
-
-         */
 
         // H ( 0,1,2,  3,4,5,  6,7,8 ) +1
         // V ( 0,3,6,  1,4,7,  2,5,8 ) +3
         // D ( 0,4,8,  2,4,6 ) +2
-
         var symbols = arrayOf("O","X")
 
         var combinaciones = arrayOf(
@@ -374,7 +349,6 @@ class MainActivity : AppCompatActivity() {
             intArrayOf(2, 4, 6)
         )
 
-
         // combinations for attack and defend
         for(player in symbols){
 
@@ -385,20 +359,20 @@ class MainActivity : AppCompatActivity() {
                     get_coords_value(get_tablero_position(coords[0])) == player /*symbol_player*/
                     && get_coords_value(get_tablero_position(coords[2])) == null
                 ){
-                    return Pair(0,2)
+                    return get_tablero_position(coords[2])
 
                 }else if(
                     get_coords_value(get_tablero_position(coords[0])) == get_coords_value(get_tablero_position(coords[2])) &&
                     get_coords_value(get_tablero_position(coords[0])) == player
                     && get_coords_value(get_tablero_position(coords[1])) == null
                 ){
-                    return Pair(0,1)
+                    return get_tablero_position(coords[1])
 
                 }else if(get_coords_value(get_tablero_position(coords[1])) == get_coords_value(get_tablero_position(coords[2])) &&
                     get_coords_value(get_tablero_position(coords[1])) == player
                     && get_coords_value(get_tablero_position(coords[0])) == null
                 ){
-                    return Pair(0,0)
+                    return get_tablero_position(coords[0])
 
                 }
 
@@ -406,45 +380,13 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        //Toast.makeText(applicationContext, "$s", Toast.LENGTH_SHORT).show()
-
-        //if(symbol in listOf(a,b,c)){
-        //return true
-        //}
-        /*
-        //CON LA PRIMERA Y SEGUNDO COMO JUGADOR
-        if( get_coords_value(get_tablero_position(coords[0])) == get_coords_value(get_tablero_position(coords[1])) &&
-            get_coords_value(get_tablero_position(coords[0])) == "O"/*symbol_player*/
-            && get_coords_value(get_tablero_position(coords[2])) == "O"
-        ){
-            return Pair(0,2)
-
-            //CON LA PRIMERA Y TERCERA COMO JUGADOR
-        }else if(
-            get_coords_value(get_tablero_position(coords[0])) == get_coords_value(get_tablero_position(coords[2])) &&
-            get_coords_value(get_tablero_position(coords[0])) == symbol_player
-            && get_coords_value(get_tablero_position(coords[1])) == "O"  //O
-        ){
-            return Pair(0,1)
-
-            //CON LA SEGUNDA Y TERCERA COMO JUGADOR
-        }else if(get_coords_value(get_tablero_position(coords[1])) == get_coords_value(get_tablero_position(coords[2])) &&
-            get_coords_value(get_tablero_position(coords[1])) == symbol_player
-            && get_coords_value(get_tablero_position(coords[0])) == "O"
-        ){
-            return Pair(0,0)
-        }
-
-         */
-
         var coords : Pair<Int,Int> = Pair(0,0)
-
         do {
             var pos = Random().nextInt(9) // random number
             coords = get_tablero_position(pos)
-            Toast.makeText(applicationContext, "$coords", Toast.LENGTH_SHORT).show()
             val empty = is_position_empty( coords )
-        }while (! empty)
+        }while (! empty && coords!= null)
+        Toast.makeText(applicationContext, "Aleatorio", Toast.LENGTH_SHORT).show()
 
         return coords
     }
