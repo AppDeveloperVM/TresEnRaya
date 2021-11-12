@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
 
     private val players = arrayOf("Jugador", "Máquina")
     private lateinit var turntxt: TextView // TURNO
-    private var turn_number: Int = 0
+    private var turnNumber: Int = 0
     private var actual_player: String = "";
     private lateinit var symbol_player: String
 
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         turno_inicial()
 
         //'X' per player, 'O' per machine
-        symbol_player = if(turn_number == 0) "X" else "O"
+        symbol_player = if(turnNumber == 0) "X" else "O"
 
         /*var pair : Pair<Int,Int> = Pair(2,2)
         var res = get_casilla_id(pair)
@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
     //--------------TURNOS-----------------
     fun turno_inicial() {
-        turn_number = 0;
+        turnNumber = 0;
         enable_py = true
         player_turn()
     }
@@ -119,16 +119,16 @@ class MainActivity : AppCompatActivity() {
             end_game()
         }
 
-        actual_player = players[turn_number] //
+        actual_player = players[turnNumber] //
         Log.d("Turno", "$actual_player")
-        symbol_player = if(turn_number == 0) "X" else "O"
+        symbol_player = if(turnNumber == 0) "X" else "O"
 
         turntxt.text = actual_player
     }
 
     fun cambio_turno() {
         if(!game_ended) {
-            if (turn_number == 1) {
+            if (turnNumber == 1) {
                 machine_turn()
             } else {
                 player_turn()
@@ -182,7 +182,7 @@ class MainActivity : AppCompatActivity() {
 
 
         /*
-        if(turn_number == 1) {
+        if(turnNumber == 1) {
             val favorable_pos = checkJugadaFavorable(Pair(x, y))
             if (favorable_pos.first != x && favorable_pos.second != y) {
                 x = favorable_pos.first
@@ -192,24 +192,24 @@ class MainActivity : AppCompatActivity() {
 
          */
 
-        symbol_player = if(turn_number == 0) "X" else "O"
+        symbol_player = if(turnNumber == 0) "X" else "O"
         _tablero[x][y] = symbol_player
         Log.d("added", "Id:"+id+" -> pos: "+x+","+y )
 
         if ( checkWinnerPlay(get_tablero_position(id), symbol_player) ){
-            winner = players[turn_number]
+            winner = players[turnNumber]
             end_game()
         }
 
         //btn.setEnabled(false)
-        if(turn_number == 0){
+        if(turnNumber == 0){
             btn.setBackgroundColor(Color.GREEN)
-        }else if(turn_number == 1){
+        }else if(turnNumber == 1){
             btn.setBackgroundColor(Color.RED)
         }
         btn.setEnabled(false)
 
-        turn_number = (turn_number + 1) % 2
+        turnNumber = (turnNumber + 1) % 2
         casillasVacias--
 
         if(!game_ended)
@@ -231,6 +231,19 @@ class MainActivity : AppCompatActivity() {
         return false
     }
 
+    fun get_coords_value(position : Pair<Int,Int>) : String? {
+        val x = position.first
+        val y = position.second
+
+        var pos_value = _tablero[x][y]
+
+        if( pos_value.isNullOrBlank() ){
+            return pos_value
+        }
+
+        return null
+    }
+
     fun findIndex(arr: Array<Int>, item: Int): Int {
         return arr.indexOf(item)
     }
@@ -238,9 +251,9 @@ class MainActivity : AppCompatActivity() {
     //disable/enable inputs
     fun changeInputPermission(){
         var access: Boolean = false
-        if(turn_number == 0){
+        if(turnNumber == 0){
             access = true
-        }else if(turn_number == 1){
+        }else if(turnNumber == 1){
             access = false
         }
 
@@ -273,10 +286,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun checkWinner(): String{
-        winner = players[turn_number]
-        return winner
-    }
 
     fun get_tablero_position(casilla: Int) : Pair<Int, Int>{
         //primera casilla, ultima fila [2][0]
@@ -332,14 +341,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         //check diagonals
-
         if( areEqual( _tablero[0][0], _tablero[1][1], _tablero[2][2], symbol  )
             ||
             areEqual( _tablero[0][2], _tablero[1][1], _tablero[2][0], symbol  )
         ){
-            Toast.makeText(applicationContext,
-                "winner ,diagonal",
-                Toast.LENGTH_SHORT).show()
+            //Toast.makeText(applicationContext, "winner ,diagonal", Toast.LENGTH_SHORT).show()
             return true
         }
 
@@ -352,58 +358,76 @@ class MainActivity : AppCompatActivity() {
         var row = posicion.first
         var column = posicion.second
 
-        //counterplay
+
+
+        // H ( 0,1,2,  3,4,5,  6,7,8 ) +1
+        // V ( 0,3,6,  1,4,7,  2,5,8 ) +3
+        // D ( 0,4,8,  2,4,6 ) +2
+
+        var combinaciones = arrayOf(
+            intArrayOf(0, 1, 2),
+            intArrayOf(3, 4, 5),
+            intArrayOf(6, 7, 8),
+            intArrayOf(0, 3, 6),
+            intArrayOf(1, 4, 7),
+            intArrayOf(2, 5, 8),
+            intArrayOf(0, 4, 8),
+            intArrayOf(2, 4, 6)
+        )
+
+        for(coords in combinaciones){
+
+            for(i in coords){
+
+            }
+
+            //if(symbol in listOf(a,b,c)){
+
+            //return true
+
+            //}
+
+            /*
+            //CON LA PRIMERA Y SEGUNDO COMO JUGADOR
+            if( get_coords_value(get_tablero_position(coords[0])) == get_coords_value(get_tablero_position(coords[1])) &&
+                get_coords_value(get_tablero_position(coords[0])) == "O"/*symbol_player*/
+                && get_coords_value(get_tablero_position(coords[2])) == "O"
+            ){
+                return Pair(0,2)
+
+                //CON LA PRIMERA Y TERCERA COMO JUGADOR
+            }else if(
+                get_coords_value(get_tablero_position(coords[0])) == get_coords_value(get_tablero_position(coords[2])) &&
+                get_coords_value(get_tablero_position(coords[0])) == symbol_player
+                && get_coords_value(get_tablero_position(coords[1])) == "O"  //O
+            ){
+                return Pair(0,1)
+
+                //CON LA SEGUNDA Y TERCERA COMO JUGADOR
+            }else if(get_coords_value(get_tablero_position(coords[1])) == get_coords_value(get_tablero_position(coords[2])) &&
+                get_coords_value(get_tablero_position(coords[1])) == symbol_player
+                && get_coords_value(get_tablero_position(coords[0])) == "O"
+            ){
+                return Pair(0,0)
+            }
+
+             */
+
+        }
+
+
+        //conquer central position
         if( _tablero[1][1].isNullOrEmpty() ){
             return Pair(1,1) //var x : Pair<Int,Int> = Pair(2,2)
         }
 
-        //check horizontals
-        var horizontals = arrayOf(Pair(row, 0), Pair(row, 1), Pair(row,2) )
-        //check verticals
-        var verticals = arrayOf(Pair(0,column), Pair(1,column), Pair(2,column) )
-        val arr_lists : Array<Array<Pair<Int, Int>>> = arrayOf(arrayOf(*horizontals,*verticals))
-
-        var matches : Int = 0
-
-        for (arr in arr_lists){
-            matches = 0
-            for ( coord in arr){
-
-                if (
-                    _tablero[coord.first][coord.second] == symbol_player
-                ){
-                    matches++ //coincidence dada
-                    Log.d("MATCH!", "MATCH $matches de $symbol_player")
-
-                    //if(matches == 3) end_game() //se han dado 3 coincidences
-
-                    if( is_position_empty(Pair(coord.first,coord.second))
-                        && _tablero[coord.first][coord.second]!=_tablero[row][column]
-                    ){
-                        return Pair(coord.first,coord.second)
-                    }
-
-                }
-            }
-
+        //check esquinas
+        val esquinas = arrayOf(0,2,6,8);
+        for(esquina in esquinas){
+            var coords = get_tablero_position(esquina)
+            if(is_position_empty(coords))
+                return coords
         }
-
-        /*
-        for ( h_coord in horizontals){
-
-            if (
-                _tablero[h_coord.first][h_coord.second] == symbol_player
-            ){
-                matches++ //coincidence dada
-                if(matches == 3) end_game() //se han dado 3 coincidences
-
-                if( is_position_empty(Pair(h_coord.first,h_coord.second)) && _tablero[h_coord.first][h_coord.second]!=_tablero[row][column] ){
-                    return Pair(h_coord.first,h_coord.second)
-                }
-
-            }
-        }
-         */
 
         return Pair(row,column)
     }
@@ -429,7 +453,7 @@ class MainActivity : AppCompatActivity() {
     fun reset_tablero(){
         enable_py = true
         game_ended = false
-        turn_number = 0
+        turnNumber = 0
         for (i in 1..totalCasillas){
             var btn = findViewById<Button>(resources.getIdentifier("button$i","id",packageName))
             btn.setEnabled(true)
