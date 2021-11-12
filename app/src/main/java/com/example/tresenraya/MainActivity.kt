@@ -442,6 +442,7 @@ class MainActivity : AppCompatActivity() {
         do {
             var pos = Random().nextInt(9) // random number
             coords = get_tablero_position(pos)
+            Toast.makeText(applicationContext, "$coords", Toast.LENGTH_SHORT).show()
             val empty = is_position_empty( coords )
         }while (! empty)
 
