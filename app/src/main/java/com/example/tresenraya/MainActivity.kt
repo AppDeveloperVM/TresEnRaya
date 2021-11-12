@@ -55,10 +55,6 @@ class MainActivity : AppCompatActivity() {
 
         //'X' per player, 'O' per machine
         symbol_player = if(turnNumber == 0) "X" else "O"
-
-        /*var pair : Pair<Int,Int> = Pair(2,2)
-        var res = get_casilla_id(pair)
-        Toast.makeText(applicationContext, "Id of pos 2,2 :$res", Toast.LENGTH_SHORT).show()*/
     }
 
     //--------------TURNOS-----------------
@@ -169,7 +165,6 @@ class MainActivity : AppCompatActivity() {
         var x = posicion_x_y.first
         var y = posicion_x_y.second
 
-        symbol_player = if(turnNumber == 0) "X" else "O"
         _tablero[x][y] = symbol_player
         Log.d("added", "Id:"+id+" -> pos: "+x+","+y )
 
@@ -391,17 +386,9 @@ class MainActivity : AppCompatActivity() {
         return coords
     }
 
-    /*fun create_pair(vararg numbers: Int) : Pair<Int, Int>{
-
-    }
-
-     */
 
     fun areEqual(a:String?,b:String?,c:String?, symbol: String): Boolean{
 
-        /*if(symbol in listOf(a,b,c)){
-            return true
-        }*/
         if( symbol == a && a == b && b == c){
             return  true
         }
