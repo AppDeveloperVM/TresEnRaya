@@ -82,34 +82,31 @@ class MainActivity : AppCompatActivity() {
         //changeInputPermission()
 
         Handler(Looper.getMainLooper()).postDelayed({
-            var machine_pos: Int
-            val x : Int = 0
-            val y : Int = 0
+            var machine_pos: Pair<Int,Int> = Pair(1,1)
 
-            //do {
-                do{
-                    machine_pos = Random().nextInt(9) // random number
-                //}while (tablero.containsKey(randomNumber)) //not equal to a number already set in tablero
+            do{
+                /*
+                machine_pos = Random().nextInt(9) // random number
+                val coords = get_tablero_position(machine_pos)
+                val x = coords.first
+                val y = coords.second
+                val empty = is_position_empty( Pair(x,y) )
+                 */
 
-                    val coords = get_tablero_position(machine_pos)
-                    val x = coords.first
-                    val y = coords.second
-                    val empty = is_position_empty( Pair(x,y) )
+                var machine_pos =  checkJugadaFavorable()
+                val empty = is_position_empty( machine_pos )
+            }while ( !empty || machine_pos == null )
 
-                    machine_pos = get_casilla_id( checkJugadaFavorable(Pair(x, y)) )
-                }while ( !empty )
-
-
-            buttonSelected(machine_pos)
+            var pos = get_casilla_id(machine_pos)
+            buttonSelected(pos)
             Log.d("End", " machine turn ended.")
             mc_turn_end = true
 
-            //if(_tablero.size < 9) {
             if(casillasVacias > 0) {
                 cambio_turno()
             }
 
-        }, 1000) // seconds
+        }, 100) // seconds
 
         //changeInputPermission()
     }
@@ -354,15 +351,17 @@ class MainActivity : AppCompatActivity() {
         return false
     }
 
-    fun checkJugadaFavorable(posicion : Pair<Int,Int>) : Pair<Int, Int>{
-        var row = posicion.first
+    fun checkJugadaFavorable() : Pair<Int, Int>{
+        /*var row = posicion.first
         var column = posicion.second
 
-
+         */
 
         // H ( 0,1,2,  3,4,5,  6,7,8 ) +1
         // V ( 0,3,6,  1,4,7,  2,5,8 ) +3
         // D ( 0,4,8,  2,4,6 ) +2
+
+        var symbols = arrayOf("O","X")
 
         var combinaciones = arrayOf(
             intArrayOf(0, 1, 2),
@@ -375,61 +374,78 @@ class MainActivity : AppCompatActivity() {
             intArrayOf(2, 4, 6)
         )
 
-        for(coords in combinaciones){
 
-            for(i in coords){
+        // combinations for attack and defend
+        for(player in symbols){
+
+            for(coords in combinaciones){
+                // 3 positions from combination
+
+                if( get_coords_value(get_tablero_position(coords[0])) == get_coords_value(get_tablero_position(coords[1])) &&
+                    get_coords_value(get_tablero_position(coords[0])) == player /*symbol_player*/
+                    && get_coords_value(get_tablero_position(coords[2])) == null
+                ){
+                    return Pair(0,2)
+
+                }else if(
+                    get_coords_value(get_tablero_position(coords[0])) == get_coords_value(get_tablero_position(coords[2])) &&
+                    get_coords_value(get_tablero_position(coords[0])) == player
+                    && get_coords_value(get_tablero_position(coords[1])) == null
+                ){
+                    return Pair(0,1)
+
+                }else if(get_coords_value(get_tablero_position(coords[1])) == get_coords_value(get_tablero_position(coords[2])) &&
+                    get_coords_value(get_tablero_position(coords[1])) == player
+                    && get_coords_value(get_tablero_position(coords[0])) == null
+                ){
+                    return Pair(0,0)
+
+                }
 
             }
 
-            //if(symbol in listOf(a,b,c)){
-
-            //return true
-
-            //}
-
-            /*
-            //CON LA PRIMERA Y SEGUNDO COMO JUGADOR
-            if( get_coords_value(get_tablero_position(coords[0])) == get_coords_value(get_tablero_position(coords[1])) &&
-                get_coords_value(get_tablero_position(coords[0])) == "O"/*symbol_player*/
-                && get_coords_value(get_tablero_position(coords[2])) == "O"
-            ){
-                return Pair(0,2)
-
-                //CON LA PRIMERA Y TERCERA COMO JUGADOR
-            }else if(
-                get_coords_value(get_tablero_position(coords[0])) == get_coords_value(get_tablero_position(coords[2])) &&
-                get_coords_value(get_tablero_position(coords[0])) == symbol_player
-                && get_coords_value(get_tablero_position(coords[1])) == "O"  //O
-            ){
-                return Pair(0,1)
-
-                //CON LA SEGUNDA Y TERCERA COMO JUGADOR
-            }else if(get_coords_value(get_tablero_position(coords[1])) == get_coords_value(get_tablero_position(coords[2])) &&
-                get_coords_value(get_tablero_position(coords[1])) == symbol_player
-                && get_coords_value(get_tablero_position(coords[0])) == "O"
-            ){
-                return Pair(0,0)
-            }
-
-             */
-
         }
 
+        //Toast.makeText(applicationContext, "$s", Toast.LENGTH_SHORT).show()
 
-        //conquer central position
-        if( _tablero[1][1].isNullOrEmpty() ){
-            return Pair(1,1) //var x : Pair<Int,Int> = Pair(2,2)
+        //if(symbol in listOf(a,b,c)){
+        //return true
+        //}
+        /*
+        //CON LA PRIMERA Y SEGUNDO COMO JUGADOR
+        if( get_coords_value(get_tablero_position(coords[0])) == get_coords_value(get_tablero_position(coords[1])) &&
+            get_coords_value(get_tablero_position(coords[0])) == "O"/*symbol_player*/
+            && get_coords_value(get_tablero_position(coords[2])) == "O"
+        ){
+            return Pair(0,2)
+
+            //CON LA PRIMERA Y TERCERA COMO JUGADOR
+        }else if(
+            get_coords_value(get_tablero_position(coords[0])) == get_coords_value(get_tablero_position(coords[2])) &&
+            get_coords_value(get_tablero_position(coords[0])) == symbol_player
+            && get_coords_value(get_tablero_position(coords[1])) == "O"  //O
+        ){
+            return Pair(0,1)
+
+            //CON LA SEGUNDA Y TERCERA COMO JUGADOR
+        }else if(get_coords_value(get_tablero_position(coords[1])) == get_coords_value(get_tablero_position(coords[2])) &&
+            get_coords_value(get_tablero_position(coords[1])) == symbol_player
+            && get_coords_value(get_tablero_position(coords[0])) == "O"
+        ){
+            return Pair(0,0)
         }
 
-        //check esquinas
-        val esquinas = arrayOf(0,2,6,8);
-        for(esquina in esquinas){
-            var coords = get_tablero_position(esquina)
-            if(is_position_empty(coords))
-                return coords
-        }
+         */
 
-        return Pair(row,column)
+        var coords : Pair<Int,Int> = Pair(0,0)
+
+        do {
+            var pos = Random().nextInt(9) // random number
+            coords = get_tablero_position(pos)
+            val empty = is_position_empty( coords )
+        }while (! empty)
+
+        return coords
     }
 
     /*fun create_pair(vararg numbers: Int) : Pair<Int, Int>{
