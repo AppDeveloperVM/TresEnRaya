@@ -386,7 +386,7 @@ class MainActivity : AppCompatActivity() {
             coords = get_tablero_position(pos)
             val empty = is_position_empty( coords )
         }while (! empty && coords!= null)
-        Toast.makeText(applicationContext, "Aleatorio", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(applicationContext, "Aleatorio", Toast.LENGTH_SHORT).show()
 
         return coords
     }
