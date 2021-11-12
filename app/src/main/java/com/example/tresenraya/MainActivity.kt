@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
     private var actual_player: String = "";
     private lateinit var symbol_player: String
 
-    private var buttons: List<Button> = ArrayList()
     private lateinit var reset: Button
 
     private var mc_turn_end : Boolean = false
@@ -75,7 +74,6 @@ class MainActivity : AppCompatActivity() {
         enable_py = false
 
         Log.d("Waiting", " for machine turn to end.")
-        //changeInputPermission()
 
         Handler(Looper.getMainLooper()).postDelayed({
             var machine_pos: Pair<Int,Int> = Pair(0,0)
@@ -95,7 +93,6 @@ class MainActivity : AppCompatActivity() {
             }
 
         }, 100) // seconds
-
         //changeInputPermission()
     }
 
@@ -138,8 +135,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         hacer_jugada(btn_selected)
-        /*mc_turn_end = true
-        check_turno()*/
     }
 
     fun handleButtonClick(view: View) {
@@ -155,7 +150,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun hacer_jugada(btn: Button){
-        //var id_b = getResources().getIdentifier("button"+ , "id", getPackageName());
         var btn_id = btn.getTag().toString()
         var id:Int = Integer.parseInt(btn_id)
         Log.d("Id", "$btn_id")
@@ -261,8 +255,6 @@ class MainActivity : AppCompatActivity() {
 
     fun get_tablero_position(casilla: Int) : Pair<Int, Int>{
         //primera casilla, ultima fila [2][0]
-
-        //var nuevo_array = Pair()
         var cont:Int = 0
 
         for(index_a in 0 until filas){
@@ -288,7 +280,6 @@ class MainActivity : AppCompatActivity() {
             for(index_b in 0 until columnas){
 
                 if(posicion.first == index_a && posicion.second == index_b){
-                    //Log.d("POSITION", "$index_a,$index_b")
                     return cont
                 }
                 cont++
@@ -303,12 +294,10 @@ class MainActivity : AppCompatActivity() {
 
         //check horizontals
         if( areEqual(_tablero[row][0], _tablero[row][1], _tablero[row][2], symbol) ) {
-            //Toast.makeText(applicationContext, "horizontal winner,"+row+","+column, Toast.LENGTH_SHORT).show()
             return true
         }
         //check verticals
         if( areEqual( _tablero[0][column], _tablero[1][column], _tablero[2][column],symbol ) ){
-            //Toast.makeText(applicationContext, "vertical winner,"+row+","+column, Toast.LENGTH_SHORT).show()
             return true
         }
 
@@ -317,11 +306,8 @@ class MainActivity : AppCompatActivity() {
             ||
             areEqual( _tablero[0][2], _tablero[1][1], _tablero[2][0], symbol  )
         ){
-            //Toast.makeText(applicationContext, "winner ,diagonal", Toast.LENGTH_SHORT).show()
             return true
         }
-
-
 
         return false
     }
@@ -381,7 +367,6 @@ class MainActivity : AppCompatActivity() {
             coords = get_tablero_position(pos)
             val empty = is_position_empty( coords )
         }while (! empty && coords!= null)
-        //Toast.makeText(applicationContext, "Aleatorio", Toast.LENGTH_SHORT).show()
 
         return coords
     }
