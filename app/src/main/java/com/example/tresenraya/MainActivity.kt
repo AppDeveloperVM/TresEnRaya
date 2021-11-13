@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     private var mc_turn_end : Boolean = false
     private var enable_py: Boolean = true
+    private val machine_turn_time : Long = 100
 
     private var game_ended: Boolean = false
     private var winner: String = ""
@@ -70,7 +71,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun machine_turn(){
-        //check_turno()
         enable_py = false
 
         Log.d("Waiting", " for machine turn to end.")
@@ -81,26 +81,25 @@ class MainActivity : AppCompatActivity() {
             do{
                 machine_pos =  checkJugadaFavorable()
                 val empty = is_position_empty( machine_pos )
-            }while ( !empty && machine_pos != null )
+            }while ( !empty && machine_pos == null ) //mientras que la jugada sugerida no sea válida
 
             var pos = get_casilla_id(machine_pos)
             buttonSelected(pos)
-            Log.d("End", " machine turn ended.")
             mc_turn_end = true
 
-            if(casillasVacias > 0) {
-                cambio_turno()
+            if(!game_ended) {
+                check_turno()
+                if(casillasVacias > 0){
+                    cambio_turno()
+                }else{
+                    end_game()
+                }
             }
 
-        }, 100) // seconds
-        //changeInputPermission()
+        }, machine_turn_time) // miliseconds
     }
 
     fun check_turno(){
-        if(casillasVacias == 0){
-            end_game()
-        }
-
         actual_player = players[turnNumber] //
         Log.d("Turno", "$actual_player")
         symbol_player = if(turnNumber == 0) "X" else "O"
@@ -140,11 +139,15 @@ class MainActivity : AppCompatActivity() {
     fun handleButtonClick(view: View) {
         if(enable_py && !game_ended){
             hacer_jugada(view as Button)
-            Log.d("End", " player turn ended.")
-            //mc_turn_end = false
-            //if(tablero.size < 9) {
-            if(casillasVacias > 0){
-                cambio_turno()
+
+
+            if(!game_ended) {
+                check_turno()
+                if(casillasVacias > 0){
+                    cambio_turno()
+                }else{
+                    end_game()
+                }
             }
         }
     }
@@ -159,11 +162,13 @@ class MainActivity : AppCompatActivity() {
         var x = posicion_x_y.first
         var y = posicion_x_y.second
 
+
+        check_turno()
+
         _tablero[x][y] = symbol_player
         Log.d("added", "Id:"+id+" -> pos: "+x+","+y )
 
         if ( checkWinnerPlay(get_tablero_position(id), symbol_player) ){
-            winner = players[turnNumber]
             end_game()
         }
 
@@ -175,11 +180,10 @@ class MainActivity : AppCompatActivity() {
         }
         btn.setEnabled(false)
 
+        Log.d( players[turnNumber], " turn ended.")
+
         turnNumber = (turnNumber + 1) % 2
         casillasVacias--
-
-        if(!game_ended)
-        check_turno()
     }
 
     fun is_position_empty(position : Pair<Int,Int>): Boolean{
@@ -210,28 +214,6 @@ class MainActivity : AppCompatActivity() {
         return null
     }
 
-    fun findIndex(arr: Array<Int>, item: Int): Int {
-        return arr.indexOf(item)
-    }
-
-    //disable/enable inputs
-    fun changeInputPermission(){
-        var access: Boolean = false
-        if(turnNumber == 0){
-            access = true
-        }else if(turnNumber == 1){
-            access = false
-        }
-
-        for (i in 1..totalCasillas){
-            var btn = findViewById<Button>(resources.getIdentifier("button$i","id",packageName))
-            btn.setEnabled(access)
-            if(access){
-                btn.setOnClickListener(::handleButtonClick)
-            }
-        }
-    }
-
     fun init_tablero(){
         for (i in 1..totalCasillas){
             var btn = findViewById<Button>(resources.getIdentifier("button$i","id",packageName))
@@ -254,7 +236,6 @@ class MainActivity : AppCompatActivity() {
 
 
     fun get_tablero_position(casilla: Int) : Pair<Int, Int>{
-        //primera casilla, ultima fila [2][0]
         var cont:Int = 0
 
         for(index_a in 0 until filas){
@@ -271,8 +252,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun get_casilla_id(posicion : Pair<Int, Int>) : Int{
-        //primera casilla, ultima fila [2][0]
-
         //var nuevo_array = Pair()
         var cont:Int = 0
 
@@ -292,19 +271,15 @@ class MainActivity : AppCompatActivity() {
         var row = posicion.first
         var column = posicion.second
 
-        //check horizontals
-        if( areEqual(_tablero[row][0], _tablero[row][1], _tablero[row][2], symbol) ) {
-            return true
-        }
-        //check verticals
-        if( areEqual( _tablero[0][column], _tablero[1][column], _tablero[2][column],symbol ) ){
-            return true
-        }
-        //check diagonals
-        if( areEqual( _tablero[0][0], _tablero[1][1], _tablero[2][2], symbol  )
+        if( areEqual(_tablero[row][0], _tablero[row][1], _tablero[row][2], symbol)//check horizontals
+            ||
+            areEqual( _tablero[0][column], _tablero[1][column], _tablero[2][column],symbol )//check verticals
+            ||
+            areEqual( _tablero[0][0], _tablero[1][1], _tablero[2][2], symbol  )//check diagonals
             ||
             areEqual( _tablero[0][2], _tablero[1][1], _tablero[2][0], symbol  )
         ){
+            winner = players[turnNumber]
             return true
         }
 
@@ -383,7 +358,6 @@ class MainActivity : AppCompatActivity() {
         if( symbol == a && a == b && b == c){
             return  true
         }
-
         return false
     }
 
