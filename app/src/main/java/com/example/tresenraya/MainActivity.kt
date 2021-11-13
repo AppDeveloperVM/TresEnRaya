@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     private var mc_turn_end : Boolean = false
     private var enable_py: Boolean = true
-    private val machine_turn_time : Long = 100
+    private val machine_turn_time : Long = 400
 
     private var game_ended: Boolean = false
     private var winner: String = ""
@@ -74,29 +74,27 @@ class MainActivity : AppCompatActivity() {
         enable_py = false
 
         Log.d("Waiting", " for machine turn to end.")
-
         Handler(Looper.getMainLooper()).postDelayed({
-            var machine_pos: Pair<Int,Int> = Pair(0,0)
+            var machine_pos: Pair<Int, Int> = Pair(0, 0)
 
-            do{
-                machine_pos =  checkJugadaFavorable()
-                val empty = is_position_empty( machine_pos )
-            }while ( !empty && machine_pos == null ) //mientras que la jugada sugerida no sea válida
+            do {
+                machine_pos = checkJugadaFavorable()
+                val empty = is_position_empty(machine_pos)
+            } while (!empty && machine_pos == null) //mientras que la jugada sugerida no sea válida
 
             var pos = get_casilla_id(machine_pos)
             buttonSelected(pos)
             mc_turn_end = true
 
-            if(!game_ended) {
+            if (!game_ended || casillasVacias > 0) {
                 check_turno()
-                if(casillasVacias > 0){
-                    cambio_turno()
-                }else{
-                    end_game()
-                }
+                cambio_turno()
+            } else {
+                end_game()
             }
 
         }, machine_turn_time) // miliseconds
+
     }
 
     fun check_turno(){
@@ -140,77 +138,71 @@ class MainActivity : AppCompatActivity() {
         if(enable_py && !game_ended){
             hacer_jugada(view as Button)
 
-
-            if(!game_ended) {
+            if(casillasVacias > 0) {
                 check_turno()
-                if(casillasVacias > 0){
-                    cambio_turno()
-                }else{
-                    end_game()
-                }
+                cambio_turno()
+            }else{
+                winner = ""
+                end_game()
             }
         }
     }
 
-    fun hacer_jugada(btn: Button){
-        var btn_id = btn.getTag().toString()
-        var id:Int = Integer.parseInt(btn_id)
-        Log.d("Id", "$btn_id")
+    fun hacer_jugada(btn: Button) {
+        if (!game_ended){
+            var btn_id = btn.getTag().toString()
+            var id: Int = Integer.parseInt(btn_id)
+            Log.d("Id", "$btn_id")
 
-        //id de celda
-        var posicion_x_y = get_tablero_position(id);
-        var x = posicion_x_y.first
-        var y = posicion_x_y.second
+            //id de celda
+            var posicion_x_y = get_tablero_position(id);
+            var x = posicion_x_y.first
+            var y = posicion_x_y.second
 
+            check_turno()
 
-        check_turno()
+            if (turnNumber == 0) {
+                btn.setBackgroundColor(Color.GREEN)
+            } else if (turnNumber == 1) {
+                btn.setBackgroundColor(Color.RED)
+            }
+            btn.setEnabled(false)
+            casillasVacias--
 
-        _tablero[x][y] = symbol_player
-        Log.d("added", "Id:"+id+" -> pos: "+x+","+y )
+            _tablero[x][y] = symbol_player
+            Log.d("added", "Id:" + id + " -> pos: " + x + "," + y)
+            Log.d(players[turnNumber], " turn ended.")
 
-        if ( checkWinnerPlay(get_tablero_position(id), symbol_player) ){
-            end_game()
+            if (checkWinnerPlay(get_tablero_position(id), symbol_player)) {
+                end_game()
+            } else {
+                turnNumber = (turnNumber + 1) % 2
+            }
         }
 
-        //btn.setEnabled(false)
-        if(turnNumber == 0){
-            btn.setBackgroundColor(Color.GREEN)
-        }else if(turnNumber == 1){
-            btn.setBackgroundColor(Color.RED)
-        }
-        btn.setEnabled(false)
-
-        Log.d( players[turnNumber], " turn ended.")
-
-        turnNumber = (turnNumber + 1) % 2
-        casillasVacias--
     }
 
     fun is_position_empty(position : Pair<Int,Int>): Boolean{
-
         val x = position.first
         val y = position.second
-
         val pos_value = _tablero[x][y]
+
         Log.d("Is pos empty? pos", "$pos_value , coords: $x, $y")
 
         if( pos_value.isNullOrBlank() ){
             return true
         }
-
         return false
     }
 
     fun get_coords_value(position : Pair<Int,Int>) : String? {
         val x = position.first
         val y = position.second
-
         var pos_value = _tablero[x][y]
 
         if(! pos_value.isNullOrBlank() ){
             return pos_value
         }
-
         return null
     }
 
@@ -252,7 +244,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun get_casilla_id(posicion : Pair<Int, Int>) : Int{
-        //var nuevo_array = Pair()
         var cont:Int = 0
 
         for(index_a in 0 until filas){
@@ -287,7 +278,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun checkJugadaFavorable() : Pair<Int, Int>{
-
         // H ( 0,1,2,  3,4,5,  6,7,8 ) +1
         // V ( 0,3,6,  1,4,7,  2,5,8 ) +3
         // D ( 0,4,8,  2,4,6 ) +2
@@ -370,8 +360,6 @@ class MainActivity : AppCompatActivity() {
             btn.setEnabled(true)
             btn.setBackgroundColor(Color.GRAY)
             btn.text = " "
-
-            //tablero = mutableMapOf<Int,String>()
         }
         _tablero = Array(3) { kotlin.arrayOfNulls<kotlin.String>(3) }
         casillasVacias = totalCasillas
