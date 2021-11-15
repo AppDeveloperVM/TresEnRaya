@@ -101,8 +101,8 @@ class MainActivity : AppCompatActivity() {
         actual_player = players[turnNumber] //
         Log.d("Turno", "$actual_player")
         symbol_player = if(turnNumber == 0) "X" else "O"
-
-        turntxt.text = actual_player
+        var turn = "Turno de $actual_player"
+        turntxt.text = turn
     }
 
     fun cambio_turno() {
@@ -220,8 +220,11 @@ class MainActivity : AppCompatActivity() {
     fun end_game(){
         game_ended = true
         if(winner != ""){
-            Toast.makeText(applicationContext, "GAME ENDED, winner is "+ winner, Toast.LENGTH_SHORT).show()
+            val text = "$winner WINS"
+            turntxt.setText(text)
+            Toast.makeText(applicationContext, "GAME ENDED, winner is $winner", Toast.LENGTH_SHORT).show()
         }else{
+            turntxt.text = "NO WINNER"
             Toast.makeText(applicationContext, "GAME ENDED, NO WINNER", Toast.LENGTH_SHORT).show()
         }
     }
