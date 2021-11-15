@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.example.tresenraya.R
+import com.example.tresenraya.databinding.TitleFragmentBinding
 
 class TitleFragment : Fragment() {
 
