@@ -6,27 +6,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.findNavController
 import com.example.tresenraya.R
 
 class TitleFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = TitleFragment()
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View {
 
-    private lateinit var viewModel: TitleViewModel
+        // Inflate the layout for this fragment
+        val binding: TitleFragmentBinding = DataBindingUtil.inflate(
+            inflater, R.layout.title_fragment, container, false)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.title_fragment, container, false)
-    }
+        binding.playGameButton.setOnClickListener {
+            findNavController().navigate(TitleFragmentDirections.actionTitleFragmentToMainActivity() )
+        }
+        return binding.root    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(TitleViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
 
 }
