@@ -45,7 +45,7 @@ class GameViewModel : ViewModel() {
 
     init {
         //resetList()
-        //en()
+        //nextTurn()
 
         timer = object : CountDownTimer(COUNTDOWN_TIME, ONE_SECOND){
 
@@ -59,6 +59,11 @@ class GameViewModel : ViewModel() {
         }
 
         timer.start()
+    }
+
+
+    private fun nextTurn() {
+        symbolPlayer = if(turnNumber == 0) "X" else "O"
     }
 
 
@@ -77,6 +82,16 @@ class GameViewModel : ViewModel() {
         private const val ONE_SECOND = 1_000L
 
         private const val COUNTDOWN_TIME = 60_000L
+
+        private val players = arrayOf("Jugador", "Máquina")
+
+        private var symbolPlayer : String = ""
+
+        private var turnNumber : Int = 0
+
+
+
+
     }
 
 }
