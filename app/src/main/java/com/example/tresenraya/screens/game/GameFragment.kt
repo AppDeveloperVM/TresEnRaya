@@ -43,7 +43,7 @@ class GameFragment : Fragment() {
 
         viewModel.onGameFinishComplete()
         val action =
-            com.example.tresenraya.GameFragmentDirections.actionGameFragmentToScoreFragment()
+            GameFragmentDirections.actionGameFragmentToScoreFragment()
 
     }
 
