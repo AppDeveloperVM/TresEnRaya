@@ -11,8 +11,8 @@
         android:label="title_fragment"
         tools:layout="@layout/title_fragment" >
         <action
-            android:id="@+id/action_titleFragment_to_mainActivity"
-            app:destination="@id/mainActivity" />
+            android:id="@+id/action_titleFragment_to_gameFragment"
+            app:destination="@id/gameFragment" />
     </fragment>
     <activity
         android:id="@+id/mainActivity"
@@ -23,5 +23,17 @@
         android:id="@+id/scoreFragment"
         android:name="com.example.tresenraya.screens.score.ScoreFragment"
         android:label="score_fragment"
-        tools:layout="@layout/score_fragment" />
+        tools:layout="@layout/score_fragment" >
+        <action
+            android:id="@+id/action_scoreFragment_to_titleFragment"
+            app:destination="@id/titleFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameFragment"
+        android:name="com.example.tresenraya.screens.game.GameFragment"
+        android:label="GameFragment" >
+        <action
+            android:id="@+id/action_gameFragment_to_scoreFragment"
+            app:destination="@id/scoreFragment" />
+    </fragment>
 </navigation>
