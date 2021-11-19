@@ -15,8 +15,16 @@ class GameViewModel : ViewModel() {
     private val filas: Int = 3
     private val columnas: Int = 3
     private val totalCasillas : Int = filas * columnas
-    private val casillasVacias : Int = totalCasillas
-    private val gameEnded : Boolean = false
+    private val _casillasVacias = MutableLiveData<Int>(totalCasillas)
+    val casillasVacias : LiveData<Int>
+        get() = _casillasVacias
+
+
+    private val _gameEnded = MutableLiveData<Boolean>(false)
+    val gameEnded: LiveData<Boolean>
+            get() = _gameEnded
+
+
     private val winner: String = ""
 
     private val _tablero: MutableLiveData<List<String>> by lazy {
@@ -25,16 +33,27 @@ class GameViewModel : ViewModel() {
         }
     }
 
+    val tablero : LiveData<List<String>>
+        get() = _tablero
 
-    private val players = MutableLiveData<Array<String>>(arrayOf("Jugador","Maquina"))
-    private val actual_player = MutableLiveData<String>()
+
+    private val _players = MutableLiveData<Array<String>>(arrayOf("Jugador","Maquina"))
+    val players : LiveData<Array<String>>
+        get() = _players
+
+    private val _actualPlayer = MutableLiveData<String>()
+    val actualPlayer : LiveData<String>
+        get() = _actualPlayer
 
     private val _turn = MutableLiveData<Int>(0)
     val turn: LiveData<Int>
         get() = _turn
 
     private val enablePy = MutableLiveData<Boolean>(true)
-    private var symbolPlayer = MutableLiveData<String>()
+    private var _symbolPlayer = MutableLiveData<String>()
+    val symbolPlayer : LiveData<String>
+        get() = _symbolPlayer
+
     private var turnNumber = MutableLiveData<Int>(0)
     //private lateinit var turnText: TextView
 
@@ -88,15 +107,15 @@ class GameViewModel : ViewModel() {
     }
 
     private fun checkTurn(){
-        //actual_player.value = players.
-        symbolPlayer.value = if(turnNumber.value == 0) "X" else "O"
-        var turn = "Turno de $actual_player"
+        //_actualPlayer.value = players
+        _symbolPlayer.value = if(turnNumber.value == 0) "X" else "O"
+        var turn = "Turno de $actualPlayer"
         //turntxt.text = turn
     }
 
     private fun cambioTurno(){
 
-        if(gameEnded != true){
+        if(_gameEnded.value != true){
             if(turnNumber.value == 1){
                 machineTurn()
             }else{
@@ -115,20 +134,19 @@ class GameViewModel : ViewModel() {
 
     fun onTurnMove(){
 
-        casillasVacias.minus(1)
+        _casillasVacias.value?.minus(1)
     }
 
     private fun nextTurn() {
-        //symbolPlayer = if(turnNumber.value == 0) "X" else "O"
-
+        _symbolPlayer.value = if(turnNumber.value == 0) "X" else "O"
     }
 
 
     private fun restartTablero(){
         turnNumber.value = 0
-        gameEnded.to(false)
-        // _tablero = Array(3) { kotlin.arrayOfNulls<kotlin.String>(3) }
-        casillasVacias.equals(totalCasillas)
+        _gameEnded.value = false
+        _casillasVacias.value = totalCasillas
+        casillasVacias.value
         checkTurn()
     }
 
@@ -136,13 +154,11 @@ class GameViewModel : ViewModel() {
     fun onNewGame(){
         restartTablero()
         turnoInicial()
-
-
     }
 
     fun onGameFinish() {
         _eventGameFinished.value = true
-        gameEnded.to(true)
+        _gameEnded.value = true
         if(true){
             val text = "$winner WINS"
             //Toast.makeText(applicationContext, "", Toast.LENGTH_SHORT).show()
@@ -163,15 +179,6 @@ class GameViewModel : ViewModel() {
         private const val ONE_SECOND = 1_000L
 
         private const val COUNTDOWN_TIME = 60_000L
-
-        private val players = arrayOf("Jugador", "Máquina")
-
-        private var symbolPlayer : String = ""
-
-        private var turnNumber : Int = 0
-
-
-
 
     }
 
