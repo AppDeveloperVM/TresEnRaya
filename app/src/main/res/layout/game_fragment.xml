@@ -12,20 +12,156 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".screens.game.GameFragment">
+        tools:context=".MainActivity">
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="100dp"
+            android:layout_height="110dp"
+            android:onClick="@{(v) -> gameViewModel.onTurnMove()}"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:contentDescription="position1"
+            android:foregroundGravity="center"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="@+id/guideline4" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="100dp"
+            android:layout_height="110dp"
+            android:onClick="@{(v) -> gameViewModel.onTurnMove()}"
+            android:layout_marginStart="16dp"
+            android:contentDescription="position2"
+            android:foregroundGravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/button1"
+            app:layout_constraintStart_toEndOf="@+id/button1" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="100dp"
+            android:layout_height="110dp"
+            android:onClick="@{(v) -> gameViewModel.onTurnMove()}"
+            android:layout_marginStart="16dp"
+            android:contentDescription="position3"
+            android:foregroundGravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/button2"
+            app:layout_constraintStart_toEndOf="@+id/button2" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="100dp"
+            android:layout_height="110dp"
+            android:onClick="@{(v) -> gameViewModel.onTurnMove()}"
+            android:layout_marginTop="8dp"
+            android:contentDescription="position4"
+            android:foregroundGravity="center"
+            app:layout_constraintStart_toStartOf="@+id/button1"
+            app:layout_constraintTop_toBottomOf="@+id/button1" />
+
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="100dp"
+            android:layout_height="110dp"
+            android:onClick="@{(v) -> gameViewModel.onTurnMove()}"
+            android:layout_marginStart="16dp"
+            android:contentDescription="position5"
+            android:foregroundGravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/button4"
+            app:layout_constraintStart_toEndOf="@+id/button4" />
+
+        <Button
+            android:id="@+id/button6"
+            android:layout_width="100dp"
+            android:layout_height="110dp"
+            android:onClick="@{(v) -> gameViewModel.onTurnMove()}"
+            android:layout_marginStart="16dp"
+            android:contentDescription="position6"
+            android:foregroundGravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/button5"
+            app:layout_constraintStart_toEndOf="@+id/button5" />
+
+        <Button
+            android:id="@+id/button7"
+            android:layout_width="100dp"
+            android:layout_height="110dp"
+            android:onClick="@{(v) -> gameViewModel.onTurnMove()}"
+            android:layout_marginTop="8dp"
+            android:contentDescription="position7"
+            android:foregroundGravity="center"
+            app:layout_constraintStart_toStartOf="@+id/button4"
+            app:layout_constraintTop_toBottomOf="@+id/button4" />
+
+        <Button
+            android:id="@+id/button8"
+            android:layout_width="100dp"
+            android:layout_height="110dp"
+            android:onClick="@{(v) -> gameViewModel.onTurnMove()}"
+            android:layout_marginStart="16dp"
+            android:contentDescription="position8"
+            android:foregroundGravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/button7"
+            app:layout_constraintStart_toEndOf="@+id/button7" />
+
+        <Button
+            android:id="@+id/button9"
+            android:layout_width="100dp"
+            android:layout_height="110dp"
+            android:onClick="@{(v) -> gameViewModel.onTurnMove()}"
+            android:layout_marginStart="16dp"
+            android:contentDescription="position9"
+            android:foregroundGravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/button8"
+            app:layout_constraintStart_toEndOf="@+id/button8" />
 
         <TextView
-            android:id="@+id/textView2"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:text="Hello"
+            android:id="@+id/turntxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{(v) -> gameViewModel.onTurnMove()}"
+            android:layout_marginEnd="110dp"
+            android:layout_marginBottom="36dp"
+            android:text="-"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/reset"
+            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintHorizontal_bias="0.947"
+            app:layout_constraintStart_toStartOf="@+id/reset" />
+
+        <Button
+            android:id="@+id/reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{(v) -> gameViewModel.onGameFinish()}"
+            android:layout_marginEnd="132dp"
+            android:layout_marginBottom="16dp"
+            android:text="New Game"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toStartOf="@+id/guideline3" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:foregroundGravity="right|center_horizontal"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="5dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

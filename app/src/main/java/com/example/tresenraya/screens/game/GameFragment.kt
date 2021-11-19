@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.NavHostFragment
 import com.example.tresenraya.R
 import com.example.tresenraya.databinding.GameFragmentBinding
 
@@ -28,13 +29,14 @@ class GameFragment : Fragment() {
             false
         )
 
-        viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
+        viewModel = ViewModelProvider(this)[GameViewModel::class.java]
 
+        binding.gameViewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         viewModel.eventGameFinished.observe(viewLifecycleOwner,
             { hasFinished -> if (hasFinished) gameFinished() })
 
-        return inflater.inflate(R.layout.game_fragment, container, false)
+        return binding.root
     }
 
 
@@ -45,6 +47,8 @@ class GameFragment : Fragment() {
         val action =
             GameFragmentDirections.actionGameFragmentToScoreFragment()
 
+        //action.score = viewModel.score.value ?: 0
+        NavHostFragment.findNavController(this).navigate(action)
     }
 
 
