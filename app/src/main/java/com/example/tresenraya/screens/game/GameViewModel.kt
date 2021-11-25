@@ -1,14 +1,16 @@
 package com.example.tresenraya.screens.game
 
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.text.format.DateUtils
-import android.widget.TextView
-import android.widget.Toast
+import android.util.Log
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.navigation.fragment.NavHostFragment
+import java.util.*
 
 class GameViewModel : ViewModel() {
 
@@ -27,6 +29,7 @@ class GameViewModel : ViewModel() {
 
     private val winner: String = ""
 
+    /*
     private val _tablero: MutableLiveData<List<String>> by lazy {
         MutableLiveData<List<String>>().apply {
             value = emptyList()
@@ -36,10 +39,13 @@ class GameViewModel : ViewModel() {
     val tablero : LiveData<List<String>>
         get() = _tablero
 
+     */
 
-    private val _players = MutableLiveData<Array<String>>(arrayOf("Jugador","Maquina"))
-    val players : LiveData<Array<String>>
-        get() = _players
+    private var _tablero = Array(filas) { arrayOfNulls<String>(columnas) }
+
+
+    private val players = Array(2) {arrayOf("Jugador","Maquina")}
+
 
     private val _actualPlayer = MutableLiveData<String>()
     val actualPlayer : LiveData<String>
@@ -51,12 +57,10 @@ class GameViewModel : ViewModel() {
 
     private val enablePy = MutableLiveData<Boolean>(true)
     private var _symbolPlayer = MutableLiveData<String>()
-    val symbolPlayer : LiveData<String>
-        get() = _symbolPlayer
 
     private var turnNumber = MutableLiveData<Int>(0)
-    //private lateinit var turnText: TextView
 
+    private val machineTurnTime: Long = 1000
 
 
     private val _score = MutableLiveData<Int>(0)
@@ -68,7 +72,7 @@ class GameViewModel : ViewModel() {
         get() = _eventGameFinished
 
     private val _currentTime = MutableLiveData<Long>()
-    val currentTime: LiveData<Long>
+    private val currentTime: LiveData<Long>
         get() = _currentTime
 
     private val timer: CountDownTimer
@@ -79,10 +83,6 @@ class GameViewModel : ViewModel() {
 
 
     init {
-        //resetList()
-        //nextTurn()
-
-        //turnText = findViewById(R.id.turnText)
 
         timer = object : CountDownTimer(COUNTDOWN_TIME, ONE_SECOND){
 
@@ -95,10 +95,16 @@ class GameViewModel : ViewModel() {
             }
         }
 
+        startGame()
         timer.start()
     }
 
 
+    private fun startGame(){
+        initTablero()
+        restartTablero()
+        turnoInicial()
+    }
 
     private fun turnoInicial(){
         turnNumber.value = 0
@@ -106,41 +112,208 @@ class GameViewModel : ViewModel() {
         playerTurn()
     }
 
-    private fun checkTurn(){
-        //_actualPlayer.value = players
-        _symbolPlayer.value = if(turnNumber.value == 0) "X" else "O"
-        var turn = "Turno de $actualPlayer"
-        //turntxt.text = turn
-    }
-
-    private fun cambioTurno(){
-
-        if(_gameEnded.value != true){
-            if(turnNumber.value == 1){
-                machineTurn()
-            }else{
-                playerTurn()
-            }
-        }
-    }
-
     private fun playerTurn(){
         enablePy.value = true
     }
 
     private fun machineTurn(){
-        enablePy.value = true
+        enablePy.value = false
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            var machinePos: Pair<Int, Int> = Pair(0, 0)
+
+            do {
+                machinePos = checkFavorableMove()
+            }while(! isPositionEmpty(machinePos) && machinePos != null )
+
+            //checking for gameEnded , if not , next Turn
+            if (_gameEnded.value != true || _casillasVacias.value!! > 0) {
+                 checkTurn()
+                 nextTurn()
+            } else {
+                _gameEnded.value = true
+                onGameFinish()
+            }
+
+        },machineTurnTime) // miliseconds
+
     }
 
-    fun onTurnMove(){
-
-        _casillasVacias.value?.minus(1)
-    }
-
-    private fun nextTurn() {
+    private fun checkTurn(){
         _symbolPlayer.value = if(turnNumber.value == 0) "X" else "O"
+        _actualPlayer.value = players[turnNumber.value!!].toString()
+
+        var turn = "-> Turno de $_actualPlayer"
+        Log.d("Turn", turn )
     }
 
+    fun onTurnMove(view: View){
+        if(_gameEnded.value !=true){
+
+            var id = view.tag.toString().toInt()
+
+            Log.d("pressed", "Id:" + view.tag.toString() )
+
+            var coords = getTableroPosition(id)
+            //isPositionEmpty()
+
+            //fin de la funcion, casillasVacias - 1
+            _casillasVacias.value = (_casillasVacias.value)?.minus(1)
+        }
+
+    }
+    private fun nextTurn() {
+        if(_gameEnded.value != true){
+
+            Log.d("Turn", "Waiting for $_actualPlayer turn to end.")
+            if(_turn.value == 1){
+                machineTurn()
+            }else{
+                playerTurn()
+            }
+            Log.d("Turn", "$_actualPlayer move done.")
+        }
+
+    }
+
+    private fun checkFavorableMove() : Pair<Int, Int>{
+        var coords : Pair<Int,Int> = Pair(0,0)
+
+        // H ( 0,1,2,  3,4,5,  6,7,8 ) +1
+        // V ( 0,3,6,  1,4,7,  2,5,8 ) +3
+        // D ( 0,4,8,  2,4,6 ) +2
+        var symbols = arrayOf("O","X")
+        var combinations = arrayOf(
+            intArrayOf(0, 1, 2),
+            intArrayOf(3, 4, 5),
+            intArrayOf(6, 7, 8),
+            intArrayOf(0, 3, 6),
+            intArrayOf(1, 4, 7),
+            intArrayOf(2, 5, 8),
+            intArrayOf(0, 4, 8),
+            intArrayOf(2, 4, 6)
+        )
+
+         //combinations for attack and defend
+        for(player in symbols){
+
+            for(coords in combinations){
+            // 3 positions from combination
+            //return posicion favorable
+    
+                //primero y segundo
+                if( getCoordsValue(getTableroPosition(coords[0])) == getCoordsValue(getTableroPosition(coords[1])) &&
+                getCoordsValue(getTableroPosition(coords[0])) == player /*symbol_player*/
+                && getCoordsValue(getTableroPosition(coords[2])) == null
+                ){
+                //return tercera posicion
+                return getTableroPosition(coords[2])
+    
+                //primero y tercero
+                }else if(
+                getCoordsValue(getTableroPosition(coords[0])) == getCoordsValue(getTableroPosition(coords[2])) &&
+                getCoordsValue(getTableroPosition(coords[0])) == player
+                && getCoordsValue(getTableroPosition(coords[1])) == null
+                ){
+                //return segunda posicion
+                return getTableroPosition(coords[1])
+    
+                //segundo y tercero
+                }else if(getCoordsValue(getTableroPosition(coords[1])) == getCoordsValue(getTableroPosition(coords[2])) &&
+                getCoordsValue(getTableroPosition(coords[1])) == player
+                && getCoordsValue(getTableroPosition(coords[0])) == null
+                ){
+                    //return primera posicion
+                    return getTableroPosition(coords[0])
+                }
+    
+            }
+
+        }
+
+        //Do random position
+        if(coords.first == 0 && coords.second == 0){
+            do {
+                var pos = Random().nextInt(9) // random number
+                coords = getTableroPosition(pos)
+                val empty = isPositionEmpty( coords )
+            }while (! empty && coords!= null)
+        }
+
+
+        return coords
+    }
+
+    private fun getCoordsValue(position : Pair<Int,Int>) : String? {
+        val x = position.first
+        val y = position.second
+        var pos_value = _tablero[x][y]
+
+        if(! pos_value.isNullOrBlank() ){
+            return pos_value
+        }
+        
+        return null
+    }
+
+    private fun getTableroPosition(casilla: Int) : Pair<Int, Int>{
+        var cont:Int = 0
+
+        for(index_a in 0 until filas){
+        for(index_b in 0 until columnas){
+
+        if(cont == casilla){
+        //Log.d("POSITION", "$index_a,$index_b")
+        return Pair(index_a,index_b)
+        }
+        cont++
+        }
+        }
+        return Pair(0,0)
+    }
+
+    private fun isPositionEmpty(position : Pair<Int,Int>): Boolean{
+        val x = position.first
+        val y = position.second
+        val pos_value = _tablero[x][y]
+
+        Log.d("Is pos empty? pos", "$pos_value , coords: $x, $y")
+
+        if( pos_value.isNullOrBlank() ){
+        return true
+        }
+        return false
+    }
+
+    fun areEqual(a:String?,b:String?,c:String?, symbol: String): Boolean{
+
+        if( symbol == a && a == b && b == c){
+            return true
+        }
+            return false
+    }
+
+
+
+
+
+
+
+    private fun initTablero(){
+
+       for (i in 1..totalCasillas){
+            //var btn =  findViewById<Button>(resources.getIdentifier("button$i","id",packageName))
+
+            //btn.setOnClickListener(::handleButtonClick)
+       }
+
+    }
+
+    fun onNewGame(){
+        initTablero()
+        restartTablero()
+        turnoInicial()
+    }
 
     private fun restartTablero(){
         turnNumber.value = 0
@@ -150,13 +323,7 @@ class GameViewModel : ViewModel() {
         checkTurn()
     }
 
-
-    fun onNewGame(){
-        restartTablero()
-        turnoInicial()
-    }
-
-    fun onGameFinish() {
+    private fun onGameFinish() {
         _eventGameFinished.value = true
         _gameEnded.value = true
         if(true){
@@ -183,3 +350,5 @@ class GameViewModel : ViewModel() {
     }
 
 }
+
+
