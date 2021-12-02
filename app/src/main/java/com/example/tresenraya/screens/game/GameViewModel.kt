@@ -48,7 +48,7 @@ class GameViewModel : ViewModel() {
 
     private var _tablero = Array(filas) { arrayOfNulls<String>(columnas) }
     private val players = arrayOf("Jugador","Maquina")
-    private val _btns = MutableLiveData(Array(10) { Color.parseColor("#b2a8ba") })
+    private val _btns = MutableLiveData(Array(9) { Color.parseColor("#b2a8ba") })
     val btns : LiveData<Array<Int>>
         get() = _btns
 
@@ -102,7 +102,7 @@ class GameViewModel : ViewModel() {
             }
         }
 
-
+        //_btns.value?.set(3,Color.parseColor("#FF0000"))
 
         startGame()
         timer.start()
@@ -113,16 +113,10 @@ class GameViewModel : ViewModel() {
         initTablero()
         restartTablero()
         turnoInicial()
-
-
-
-        //@{(v) -> v.isEnabled() ? gameViewModel.colorPlayer(v) : gameViewModel.startingBox(v)  }
-
-
     }
 
     private fun turnoInicial(){
-        turnNumber.value = 0
+        _turn.value = 0
         enablePy.value = true
         playerTurn()
     }
@@ -134,12 +128,13 @@ class GameViewModel : ViewModel() {
     private fun machineTurn(){
         enablePy.value = false
 
+
         Handler(Looper.getMainLooper()).postDelayed({
             var machinePos: Pair<Int, Int> = Pair(0, 0)
 
             do {
                 machinePos = checkFavorableMove()
-            }while( (!isPositionEmpty(machinePos)) || machinePos == null )
+            }while( (!isPositionEmpty(machinePos)) && machinePos != null )
 
             //checking for gameEnded , if not , next Turn
             if (_gameEnded.value != true || _casillasVacias.value!! > 0) {
@@ -149,9 +144,6 @@ class GameViewModel : ViewModel() {
                 //view.isEnabled = false
                 val id = get_casilla_id(machinePos)
                 _btns.value?.set(id,Color.parseColor("#FF0000"))
-
-
-
 
                 setTableroMove(machinePos)
             } else {
@@ -164,18 +156,33 @@ class GameViewModel : ViewModel() {
     }
 
     private fun checkTurn(){
-        _symbolPlayer.value = if(turnNumber.value == 0) "X" else "O"
-        _actualPlayer.value = players[turnNumber.value!!].toString()
+        _symbolPlayer.value = if(_turn.value == 0) "X" else "O"
+        _actualPlayer.value = players[_turn.value!!]
 
         var turn = "-> Turno de ${_actualPlayer.value}"
         Log.d("Turn", turn )
+    }
+
+    private fun nextTurn() {
+        if(_gameEnded.value != true){
+
+            if(_turn.value!! >= 2) _turn.value = 0
+
+            Log.d("Turn", "Waiting for ${_actualPlayer.value} turn to end.")
+            if(_turn.value == 0){
+                playerTurn()
+            }else if(_turn.value == 1){
+                machineTurn()
+            }
+            Log.d("Turn", "${_actualPlayer.value} move done. ,${_turn.value}")
+        }
+
     }
 
     fun onPlayerMove(view: View){
         if(_gameEnded.value !=true){
 
             var id = view.tag.toString().toInt()
-            //_btns.value?.set(id,Color.parseColor("#3BC115"))
             Log.d("pressed", "Id:" + view.tag.toString() + " selected." )
 
             var coords = getTableroPosition(id)
@@ -187,7 +194,6 @@ class GameViewModel : ViewModel() {
             }else{
                 Log.d("pressed", "Id:" + view.tag.toString() + " not empty.")
             }
-
 
         }
 
@@ -202,25 +208,10 @@ class GameViewModel : ViewModel() {
 
         _casillasVacias.value = (_casillasVacias.value)?.minus(1)
 
+
         checkTurn()
+        _turn.value = (_turn.value)?.plus(1)
         nextTurn()
-    }
-
-    private fun nextTurn() {
-        if(_gameEnded.value != true){
-
-            _turn.value = (_turn.value)?.plus(1)
-            if(_turn.value!! >= 2) _turn.value = 0
-
-            Log.d("Turn", "Waiting for ${_actualPlayer.value} turn to end.")
-            if(_turn.value == 1){
-                machineTurn()
-            }else{
-                playerTurn()
-            }
-            Log.d("Turn", "${_actualPlayer.value} move done.")
-        }
-
     }
 
     private fun checkFavorableMove() : Pair<Int, Int>{
@@ -291,8 +282,6 @@ class GameViewModel : ViewModel() {
         return coords
     }
 
-
-
     private fun getCoordsValue(position : Pair<Int,Int>) : String? {
         val x = position.first
         val y = position.second
@@ -321,15 +310,15 @@ class GameViewModel : ViewModel() {
         return Pair(0,0)
     }
 
-    fun get_casilla_id(posicion : Pair<Int, Int>) : Int{
+    private fun get_casilla_id(posicion : Pair<Int, Int>) : Int{
         var cont:Int = 0
 
         for(index_a in 0 until filas){
             for(index_b in 0 until columnas){
 
-            if(posicion.first == index_a && posicion.second == index_b){
-                return cont
-            }
+                if(posicion.first == index_a && posicion.second == index_b){
+                    return cont
+                }
             cont++
             }
         }
@@ -349,14 +338,13 @@ class GameViewModel : ViewModel() {
         return false
     }
 
-    fun areEqual(a:String?,b:String?,c:String?, symbol: String): Boolean{
+    private fun areEqual(a:String?,b:String?,c:String?, symbol: String): Boolean{
 
         if( symbol == a && a == b && b == c){
             return true
         }
             return false
     }
-
 
     private fun initTablero(){
 
@@ -368,29 +356,10 @@ class GameViewModel : ViewModel() {
 
     }
 
-    fun onNewGame(){
-        initTablero()
-        restartTablero()
-        turnoInicial()
-    }
-
-
-    fun colorPlayer(view: View): Int {
-
-        return Color.BLUE
-    }
-
-    fun startingBox(view: View): Int {
-        view.setBackgroundColor(Color.BLUE)
-
-        return Color.BLUE
-    }
-
     private fun restartTablero(){
-        turnNumber.value = 0
+        _turn.value = 0
         _gameEnded.value = false
         _casillasVacias.value = totalCasillas
-        casillasVacias.value
         checkTurn()
     }
 
@@ -405,8 +374,10 @@ class GameViewModel : ViewModel() {
         }
     }
 
-    fun onButtonSelectedByMachine(id: Int){
-
+    fun onNewGame(){
+        initTablero()
+        restartTablero()
+        turnoInicial()
     }
 
     fun onGameFinishComplete() {
