@@ -1,15 +1,22 @@
 package com.example.tresenraya.screens.game
 
+import android.app.PendingIntent.getActivity
+import android.graphics.Color
+import android.graphics.Color.red
+import android.graphics.ColorFilter
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.example.tresenraya.MainActivity
+import com.example.tresenraya.R
 import java.util.*
 
 class GameViewModel : ViewModel() {
@@ -26,7 +33,6 @@ class GameViewModel : ViewModel() {
     val gameEnded: LiveData<Boolean>
             get() = _gameEnded
 
-
     private val winner: String = ""
 
     /*
@@ -38,14 +44,13 @@ class GameViewModel : ViewModel() {
 
     val tablero : LiveData<List<String>>
         get() = _tablero
-
      */
 
     private var _tablero = Array(filas) { arrayOfNulls<String>(columnas) }
-
-
-    private val players = Array(2) {arrayOf("Jugador","Maquina")}
-
+    private val players = arrayOf("Jugador","Maquina")
+    private val _btns = MutableLiveData(Array(10) { Color.parseColor("#b2a8ba") })
+    val btns : LiveData<Array<Int>>
+        get() = _btns
 
     private val _actualPlayer = MutableLiveData<String>()
     val actualPlayer : LiveData<String>
@@ -59,13 +64,15 @@ class GameViewModel : ViewModel() {
     private var _symbolPlayer = MutableLiveData<String>()
 
     private var turnNumber = MutableLiveData<Int>(0)
-
     private val machineTurnTime: Long = 1000
+
 
 
     private val _score = MutableLiveData<Int>(0)
     val score: LiveData<Int>
         get() = _score
+
+
 
     private val _eventGameFinished = MutableLiveData<Boolean>(false)
     val eventGameFinished: LiveData<Boolean>
@@ -95,6 +102,8 @@ class GameViewModel : ViewModel() {
             }
         }
 
+
+
         startGame()
         timer.start()
     }
@@ -104,6 +113,12 @@ class GameViewModel : ViewModel() {
         initTablero()
         restartTablero()
         turnoInicial()
+
+
+
+        //@{(v) -> v.isEnabled() ? gameViewModel.colorPlayer(v) : gameViewModel.startingBox(v)  }
+
+
     }
 
     private fun turnoInicial(){
@@ -124,12 +139,21 @@ class GameViewModel : ViewModel() {
 
             do {
                 machinePos = checkFavorableMove()
-            }while(! isPositionEmpty(machinePos) && machinePos != null )
+            }while( (!isPositionEmpty(machinePos)) || machinePos == null )
 
             //checking for gameEnded , if not , next Turn
             if (_gameEnded.value != true || _casillasVacias.value!! > 0) {
-                 checkTurn()
-                 nextTurn()
+
+                //view.tag
+                //view.setBackgroundColor(Color.GREEN)
+                //view.isEnabled = false
+                val id = get_casilla_id(machinePos)
+                _btns.value?.set(id,Color.parseColor("#FF0000"))
+
+
+
+
+                setTableroMove(machinePos)
             } else {
                 _gameEnded.value = true
                 onGameFinish()
@@ -143,35 +167,58 @@ class GameViewModel : ViewModel() {
         _symbolPlayer.value = if(turnNumber.value == 0) "X" else "O"
         _actualPlayer.value = players[turnNumber.value!!].toString()
 
-        var turn = "-> Turno de $_actualPlayer"
+        var turn = "-> Turno de ${_actualPlayer.value}"
         Log.d("Turn", turn )
     }
 
-    fun onTurnMove(view: View){
+    fun onPlayerMove(view: View){
         if(_gameEnded.value !=true){
 
             var id = view.tag.toString().toInt()
-
-            Log.d("pressed", "Id:" + view.tag.toString() )
+            //_btns.value?.set(id,Color.parseColor("#3BC115"))
+            Log.d("pressed", "Id:" + view.tag.toString() + " selected." )
 
             var coords = getTableroPosition(id)
-            //isPositionEmpty()
+            if(isPositionEmpty(coords)){ //isPositionEmpty()
+                view.setBackgroundColor(Color.GREEN)
+                view.isEnabled = false
 
-            //fin de la funcion, casillasVacias - 1
-            _casillasVacias.value = (_casillasVacias.value)?.minus(1)
+                setTableroMove(coords)
+            }else{
+                Log.d("pressed", "Id:" + view.tag.toString() + " not empty.")
+            }
+
+
         }
 
     }
+
+    private fun setTableroMove(coords : Pair<Int,Int>){
+        var x = coords.first
+        var y = coords.second
+
+        _tablero[x][y] = _symbolPlayer.value
+        Log.d("move done!", "x: $x, y: $y")
+
+        _casillasVacias.value = (_casillasVacias.value)?.minus(1)
+
+        checkTurn()
+        nextTurn()
+    }
+
     private fun nextTurn() {
         if(_gameEnded.value != true){
 
-            Log.d("Turn", "Waiting for $_actualPlayer turn to end.")
+            _turn.value = (_turn.value)?.plus(1)
+            if(_turn.value!! >= 2) _turn.value = 0
+
+            Log.d("Turn", "Waiting for ${_actualPlayer.value} turn to end.")
             if(_turn.value == 1){
                 machineTurn()
             }else{
                 playerTurn()
             }
-            Log.d("Turn", "$_actualPlayer move done.")
+            Log.d("Turn", "${_actualPlayer.value} move done.")
         }
 
     }
@@ -244,6 +291,8 @@ class GameViewModel : ViewModel() {
         return coords
     }
 
+
+
     private fun getCoordsValue(position : Pair<Int,Int>) : String? {
         val x = position.first
         val y = position.second
@@ -260,16 +309,31 @@ class GameViewModel : ViewModel() {
         var cont:Int = 0
 
         for(index_a in 0 until filas){
-        for(index_b in 0 until columnas){
+            for(index_b in 0 until columnas){
 
-        if(cont == casilla){
-        //Log.d("POSITION", "$index_a,$index_b")
-        return Pair(index_a,index_b)
-        }
-        cont++
-        }
+            if(cont == casilla){
+                //Log.d("POSITION", "$index_a,$index_b")
+                return Pair(index_a,index_b)
+            }
+                cont++
+            }
         }
         return Pair(0,0)
+    }
+
+    fun get_casilla_id(posicion : Pair<Int, Int>) : Int{
+        var cont:Int = 0
+
+        for(index_a in 0 until filas){
+            for(index_b in 0 until columnas){
+
+            if(posicion.first == index_a && posicion.second == index_b){
+                return cont
+            }
+            cont++
+            }
+        }
+        return cont
     }
 
     private fun isPositionEmpty(position : Pair<Int,Int>): Boolean{
@@ -294,11 +358,6 @@ class GameViewModel : ViewModel() {
     }
 
 
-
-
-
-
-
     private fun initTablero(){
 
        for (i in 1..totalCasillas){
@@ -313,6 +372,18 @@ class GameViewModel : ViewModel() {
         initTablero()
         restartTablero()
         turnoInicial()
+    }
+
+
+    fun colorPlayer(view: View): Int {
+
+        return Color.BLUE
+    }
+
+    fun startingBox(view: View): Int {
+        view.setBackgroundColor(Color.BLUE)
+
+        return Color.BLUE
     }
 
     private fun restartTablero(){
@@ -332,6 +403,10 @@ class GameViewModel : ViewModel() {
         }else{
             //Toast.makeText(applicationContext, "GAME ENDED, NO WINNER", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun onButtonSelectedByMachine(id: Int){
+
     }
 
     fun onGameFinishComplete() {

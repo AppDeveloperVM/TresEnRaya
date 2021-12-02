@@ -23,7 +23,8 @@
             android:layout_marginTop="20dp"
             android:contentDescription="position1"
             android:foregroundGravity="center"
-            android:onClick="@{(v) -> gameViewModel.onTurnMove(v)}"
+            android:onClick="@{(v) -> gameViewModel.onPlayerMove(v)}"
+            android:backgroundTint="@{ gameViewModel.btns[1] }"
             android:tag="0"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="@+id/guideline4" />
@@ -35,7 +36,8 @@
             android:layout_marginStart="16dp"
             android:contentDescription="position2"
             android:foregroundGravity="center"
-            android:onClick="@{(v) -> gameViewModel.onTurnMove(v)}"
+            android:onClick="@{(v) -> gameViewModel.onPlayerMove(v)}"
+            android:backgroundTint="@{ gameViewModel.btns[2] }"
             android:tag="1"
             app:layout_constraintBottom_toBottomOf="@+id/button1"
             app:layout_constraintStart_toEndOf="@+id/button1" />
@@ -47,7 +49,8 @@
             android:layout_marginStart="16dp"
             android:contentDescription="position3"
             android:foregroundGravity="center"
-            android:onClick="@{(v) -> gameViewModel.onTurnMove(v)}"
+            android:onClick="@{(v) -> gameViewModel.onPlayerMove(v)}"
+            android:backgroundTint="@{ gameViewModel.btns[3] }"
             android:tag="2"
             app:layout_constraintBottom_toBottomOf="@+id/button2"
             app:layout_constraintStart_toEndOf="@+id/button2" />
@@ -59,7 +62,8 @@
             android:layout_marginTop="8dp"
             android:contentDescription="position4"
             android:foregroundGravity="center"
-            android:onClick="@{(v) -> gameViewModel.onTurnMove(v)}"
+            android:onClick="@{(v) -> gameViewModel.onPlayerMove(v)}"
+            android:backgroundTint="@{ gameViewModel.btns[4] }"
             android:tag="3"
             app:layout_constraintStart_toStartOf="@+id/button1"
             app:layout_constraintTop_toBottomOf="@+id/button1" />
@@ -71,7 +75,8 @@
             android:layout_marginStart="16dp"
             android:contentDescription="position5"
             android:foregroundGravity="center"
-            android:onClick="@{(v) -> gameViewModel.onTurnMove(v)}"
+            android:onClick="@{(v) -> gameViewModel.onPlayerMove(v)}"
+            android:backgroundTint="@{ gameViewModel.btns[5] }"
             android:tag="4"
             app:layout_constraintBottom_toBottomOf="@+id/button4"
             app:layout_constraintStart_toEndOf="@+id/button4" />
@@ -83,7 +88,8 @@
             android:layout_marginStart="16dp"
             android:contentDescription="position6"
             android:foregroundGravity="center"
-            android:onClick="@{(v) -> gameViewModel.onTurnMove(v)}"
+            android:onClick="@{(v) -> gameViewModel.onPlayerMove(v)}"
+            android:backgroundTint="@{ gameViewModel.btns[6] }"
             android:tag="5"
             app:layout_constraintBottom_toBottomOf="@+id/button5"
             app:layout_constraintStart_toEndOf="@+id/button5" />
@@ -95,7 +101,8 @@
             android:layout_marginTop="8dp"
             android:contentDescription="position7"
             android:foregroundGravity="center"
-            android:onClick="@{(v) -> gameViewModel.onTurnMove(v)}"
+            android:onClick="@{(v) -> gameViewModel.onPlayerMove(v)}"
+            android:backgroundTint="@{ gameViewModel.btns[7] }"
             android:tag="6"
             app:layout_constraintStart_toStartOf="@+id/button4"
             app:layout_constraintTop_toBottomOf="@+id/button4" />
@@ -107,7 +114,8 @@
             android:layout_marginStart="16dp"
             android:contentDescription="position8"
             android:foregroundGravity="center"
-            android:onClick="@{(v) -> gameViewModel.onTurnMove(v)}"
+            android:onClick="@{(v) -> gameViewModel.onPlayerMove(v)}"
+            android:backgroundTint="@{ gameViewModel.btns[8] }"
             android:tag="7"
             app:layout_constraintBottom_toBottomOf="@+id/button7"
             app:layout_constraintStart_toEndOf="@+id/button7" />
@@ -119,7 +127,8 @@
             android:layout_marginStart="16dp"
             android:contentDescription="position9"
             android:foregroundGravity="center"
-            android:onClick="@{(v) -> gameViewModel.onTurnMove(v)}"
+            android:onClick="@{(v) -> gameViewModel.onPlayerMove(v)}"
+            android:backgroundTint="@{ gameViewModel.btns[9] }"
             android:tag="8"
             app:layout_constraintBottom_toBottomOf="@+id/button8"
             app:layout_constraintStart_toEndOf="@+id/button8" />
@@ -129,12 +138,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="110dp"
-            android:layout_marginBottom="36dp"
+            android:layout_marginBottom="192dp"
             android:text="@{gameViewModel.actualPlayer}"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/reset"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintHorizontal_bias="0.947"
+            app:layout_constraintHorizontal_bias="0.416"
             app:layout_constraintStart_toStartOf="@+id/reset" />
 
         <Button
