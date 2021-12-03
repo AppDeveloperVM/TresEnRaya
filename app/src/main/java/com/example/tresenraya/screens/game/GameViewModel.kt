@@ -154,24 +154,18 @@ class GameViewModel : ViewModel() {
         _symbolPlayer.value = if(_turn.value == 0) "X" else "O"
         _actualPlayer.value = players[_turn.value!!]
 
-        var turn = "-> Turno de ${_actualPlayer.value}"
-        Log.d("Turn", turn )
     }
 
     private fun nextTurn() {
         if(_gameEnded.value != true){
 
 
-
-
-            Log.d("Turn", "Waiting for ${_actualPlayer.value} turn to end.")
             if(_turn.value == 0){
                 playerTurn()
             }else if(_turn.value == 1){
                 machineTurn()
             }
-            Log.d("Turn", "${_actualPlayer.value} move done. ,${_turn.value}")
-            Log.d("Turno change", "-------------------------------")
+
         }
 
     }
@@ -202,8 +196,8 @@ class GameViewModel : ViewModel() {
             var y = coords.second
 
             _tablero[x][y] = _symbolPlayer.value
-            Log.d("move done!", " casilla -> x: $x, y: $y")
-
+            Log.d("Turn", "Mode DONE! casilla -> x: $x, y: $y")
+            Log.d("Turn", "Turno de ${_actualPlayer.value} finalizado")
 
             if( checkWinnerPlay( coords, _symbolPlayer.value.toString() ) ){
                 onGameFinish()
@@ -212,7 +206,9 @@ class GameViewModel : ViewModel() {
                 _casillasVacias.value = (_casillasVacias.value)?.minus(1)
                 checkTurn()
 
-                Log.d("siguiente turno", "Turno de ${_turn.value}")
+                Log.d("Turn", "-------------------------------")
+                Log.d("Turn", "Turno de ${_actualPlayer.value}")
+                Log.d("Turn", "Waiting for ${_actualPlayer.value} turn to end.")
 
                 nextTurn()
             }
@@ -376,10 +372,9 @@ class GameViewModel : ViewModel() {
 
     private fun initTablero(){
 
-       for (i in 1..totalCasillas){
-            //var btn =  findViewById<Button>(resources.getIdentifier("button$i","id",packageName))
-
-            //btn.setOnClickListener(::handleButtonClick)
+       for (i in 0..totalCasillas){
+           // set color = grey(default)
+           _btns.value?.set(i,Color.parseColor("#b2a8ba"))
        }
 
     }
@@ -387,6 +382,7 @@ class GameViewModel : ViewModel() {
     private fun restartTablero(){
         _turn.value = 0
         _gameEnded.value = false
+        _tablero = Array(filas) { arrayOfNulls<String>(columnas) }
         _casillasVacias.value = totalCasillas
         checkTurn()
     }
@@ -394,12 +390,8 @@ class GameViewModel : ViewModel() {
     private fun onGameFinish() {
         _eventGameFinished.value = true
         _gameEnded.value = true
-        if(true){
-            val text = "$winner WINS"
-            //Toast.makeText(applicationContext, "", Toast.LENGTH_SHORT).show()
-        }else{
-            //Toast.makeText(applicationContext, "GAME ENDED, NO WINNER", Toast.LENGTH_SHORT).show()
-        }
+        //winner =
+
     }
 
     fun onNewGame(){
