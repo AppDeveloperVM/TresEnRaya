@@ -1,23 +1,16 @@
 package com.example.tresenraya.screens.game
 
-import android.app.PendingIntent.getActivity
 import android.graphics.Color
-import android.graphics.Color.red
-import android.graphics.ColorFilter
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.example.tresenraya.MainActivity
-import com.example.tresenraya.R
-import java.util.*
 
 class GameViewModel : ViewModel() {
 
@@ -33,7 +26,7 @@ class GameViewModel : ViewModel() {
     val gameEnded: LiveData<Boolean>
             get() = _gameEnded
 
-    private val winner: String = ""
+    private var winner: String = ""
 
     /*
     private val _tablero: MutableLiveData<List<String>> by lazy {
@@ -52,6 +45,10 @@ class GameViewModel : ViewModel() {
     val btns : LiveData<Array<Int>>
         get() = _btns
 
+    private val _pyEnabled = MutableLiveData<Boolean>()
+    val pyEnabled : LiveData<Boolean>
+        get() = _pyEnabled
+
     private val _actualPlayer = MutableLiveData<String>()
     val actualPlayer : LiveData<String>
         get() = _actualPlayer
@@ -60,10 +57,8 @@ class GameViewModel : ViewModel() {
     val turn: LiveData<Int>
         get() = _turn
 
-    private val enablePy = MutableLiveData<Boolean>(true)
     private var _symbolPlayer = MutableLiveData<String>()
 
-    private var turnNumber = MutableLiveData<Int>(0)
     private val machineTurnTime: Long = 1000
 
 
@@ -102,7 +97,6 @@ class GameViewModel : ViewModel() {
             }
         }
 
-        //_btns.value?.set(3,Color.parseColor("#FF0000"))
 
         startGame()
         timer.start()
@@ -117,33 +111,32 @@ class GameViewModel : ViewModel() {
 
     private fun turnoInicial(){
         _turn.value = 0
-        enablePy.value = true
+        _pyEnabled.value = true
         playerTurn()
     }
 
     private fun playerTurn(){
-        enablePy.value = true
+        _pyEnabled.value = true
     }
 
     private fun machineTurn(){
-        enablePy.value = false
-
+        _pyEnabled.value = false
 
         Handler(Looper.getMainLooper()).postDelayed({
             var machinePos: Pair<Int, Int> = Pair(0, 0)
 
             do {
                 machinePos = checkFavorableMove()
-            }while( (!isPositionEmpty(machinePos)) && machinePos != null )
+            }while( !isPositionEmpty(machinePos) )
 
             //checking for gameEnded , if not , next Turn
-            if (_gameEnded.value != true || _casillasVacias.value!! > 0) {
-
-                //view.tag
-                //view.setBackgroundColor(Color.GREEN)
-                //view.isEnabled = false
+            if (_gameEnded.value != true || _casillasVacias.value!! < 1) {
                 val id = get_casilla_id(machinePos)
+                Log.d("button color changed", "${_btns.value?.get(id)}" )
                 _btns.value?.set(id,Color.parseColor("#FF0000"))
+
+
+                Log.d("button color changed", "${_btns.value?.get(id)}" )
 
                 setTableroMove(machinePos)
             } else {
@@ -180,13 +173,13 @@ class GameViewModel : ViewModel() {
     }
 
     fun onPlayerMove(view: View){
-        if(_gameEnded.value !=true){
+        if(_gameEnded.value !=true && _pyEnabled.value == true){
 
             var id = view.tag.toString().toInt()
             Log.d("pressed", "Id:" + view.tag.toString() + " selected." )
 
             var coords = getTableroPosition(id)
-            if(isPositionEmpty(coords)){ //isPositionEmpty()
+            if(isPositionEmpty(coords)){ //isPositionEmpty
                 view.setBackgroundColor(Color.GREEN)
                 view.isEnabled = false
 
@@ -200,18 +193,29 @@ class GameViewModel : ViewModel() {
     }
 
     private fun setTableroMove(coords : Pair<Int,Int>){
-        var x = coords.first
-        var y = coords.second
+        if(_gameEnded.value == false) {
+            var x = coords.first
+            var y = coords.second
 
-        _tablero[x][y] = _symbolPlayer.value
-        Log.d("move done!", "x: $x, y: $y")
-
-        _casillasVacias.value = (_casillasVacias.value)?.minus(1)
+            _tablero[x][y] = _symbolPlayer.value
+            Log.d("move done!", "x: $x, y: $y")
 
 
-        checkTurn()
-        _turn.value = (_turn.value)?.plus(1)
-        nextTurn()
+            if( checkWinnerPlay( coords, _symbolPlayer.value.toString()) ){
+                onGameFinish()
+            }else{
+                checkTurn()
+
+                _turn.value = (_turn.value)?.plus(1)
+                _casillasVacias.value = (_casillasVacias.value)?.minus(1)
+                Log.d("siguiente turno", "turno de ${_turn.value}")
+
+                nextTurn()
+            }
+
+
+
+        }
     }
 
     private fun checkFavorableMove() : Pair<Int, Int>{
@@ -270,16 +274,35 @@ class GameViewModel : ViewModel() {
         }
 
         //Do random position
-        if(coords.first == 0 && coords.second == 0){
+        /*if(coords.first == 0 && coords.second == 0){
             do {
                 var pos = Random().nextInt(9) // random number
                 coords = getTableroPosition(pos)
                 val empty = isPositionEmpty( coords )
             }while (! empty && coords!= null)
-        }
+        }*/
 
 
         return coords
+    }
+
+    private fun checkWinnerPlay(posicion : Pair<Int,Int>, symbol : String): Boolean{
+        var row = posicion.first
+        var column = posicion.second
+
+        if( areEqual(_tablero[row][0], _tablero[row][1], _tablero[row][2], symbol)//check horizontals
+        ||
+        areEqual( _tablero[0][column], _tablero[1][column], _tablero[2][column],symbol )//check verticals
+        ||
+        areEqual( _tablero[0][0], _tablero[1][1], _tablero[2][2], symbol  )//check diagonals
+        ||
+        areEqual( _tablero[0][2], _tablero[1][1], _tablero[2][0], symbol  )
+        ){
+        winner = players[_turn.value!!]
+        return true
+        }
+
+        return false
     }
 
     private fun getCoordsValue(position : Pair<Int,Int>) : String? {
@@ -328,13 +351,14 @@ class GameViewModel : ViewModel() {
     private fun isPositionEmpty(position : Pair<Int,Int>): Boolean{
         val x = position.first
         val y = position.second
-        val pos_value = _tablero[x][y]
+        val posValue = _tablero[x][y]
 
-        Log.d("Is pos empty? pos", "$pos_value , coords: $x, $y")
+        Log.d("Is pos empty? pos", "$posValue , coords: $x, $y")
 
-        if( pos_value.isNullOrBlank() ){
+        if( posValue.isNullOrBlank() ){
         return true
         }
+
         return false
     }
 
