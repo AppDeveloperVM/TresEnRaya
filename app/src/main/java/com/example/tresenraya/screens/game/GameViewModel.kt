@@ -299,7 +299,9 @@ class GameViewModel : ViewModel() {
         areEqual( _tablero[0][2], _tablero[1][1], _tablero[2][0], symbol  )
         ){
         winner = players[_turn.value!!]
-        return true
+        Log.d("turn", "WINNER : $winner")
+
+            return true
         }
 
         return false
@@ -372,7 +374,7 @@ class GameViewModel : ViewModel() {
 
     private fun initTablero(){
 
-       for (i in 0..totalCasillas){
+       for (i in 0 until totalCasillas){
            // set color = grey(default)
            _btns.value?.set(i,Color.parseColor("#b2a8ba"))
        }
@@ -390,8 +392,6 @@ class GameViewModel : ViewModel() {
     private fun onGameFinish() {
         _eventGameFinished.value = true
         _gameEnded.value = true
-        //winner =
-
     }
 
     fun onNewGame(){
