@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import java.util.*
 
 class GameViewModel : ViewModel() {
 
@@ -129,13 +130,13 @@ class GameViewModel : ViewModel() {
                 machinePos = checkFavorableMove()
             }while( !isPositionEmpty(machinePos) )
 
+
             //checking for gameEnded , if not , next Turn
-            if (_gameEnded.value != true || _casillasVacias.value!! < 1) {
+            if (_gameEnded.value != true && _casillasVacias.value!! > 1) {
                 val id = get_casilla_id(machinePos)
-                Log.d("button color changed", "${_btns.value?.get(id)}" )
-                _btns.value?.set(id,Color.parseColor("#FF0000"))
+                Log.d("casilla: ", "${_btns.value?.get(id)}" )
 
-
+                _btns.value?.set(3,Color.parseColor("#FF0000"))
                 Log.d("button color changed", "${_btns.value?.get(id)}" )
 
                 setTableroMove(machinePos)
@@ -149,6 +150,7 @@ class GameViewModel : ViewModel() {
     }
 
     private fun checkTurn(){
+        if(_turn.value!! >= 2) _turn.value = 0
         _symbolPlayer.value = if(_turn.value == 0) "X" else "O"
         _actualPlayer.value = players[_turn.value!!]
 
@@ -159,7 +161,8 @@ class GameViewModel : ViewModel() {
     private fun nextTurn() {
         if(_gameEnded.value != true){
 
-            if(_turn.value!! >= 2) _turn.value = 0
+
+
 
             Log.d("Turn", "Waiting for ${_actualPlayer.value} turn to end.")
             if(_turn.value == 0){
@@ -168,6 +171,7 @@ class GameViewModel : ViewModel() {
                 machineTurn()
             }
             Log.d("Turn", "${_actualPlayer.value} move done. ,${_turn.value}")
+            Log.d("Turno change", "-------------------------------")
         }
 
     }
@@ -198,17 +202,17 @@ class GameViewModel : ViewModel() {
             var y = coords.second
 
             _tablero[x][y] = _symbolPlayer.value
-            Log.d("move done!", "x: $x, y: $y")
+            Log.d("move done!", " casilla -> x: $x, y: $y")
 
 
-            if( checkWinnerPlay( coords, _symbolPlayer.value.toString()) ){
+            if( checkWinnerPlay( coords, _symbolPlayer.value.toString() ) ){
                 onGameFinish()
             }else{
-                checkTurn()
-
                 _turn.value = (_turn.value)?.plus(1)
                 _casillasVacias.value = (_casillasVacias.value)?.minus(1)
-                Log.d("siguiente turno", "turno de ${_turn.value}")
+                checkTurn()
+
+                Log.d("siguiente turno", "Turno de ${_turn.value}")
 
                 nextTurn()
             }
@@ -274,13 +278,13 @@ class GameViewModel : ViewModel() {
         }
 
         //Do random position
-        /*if(coords.first == 0 && coords.second == 0){
+        if(coords.first == 0 && coords.second == 0){
             do {
                 var pos = Random().nextInt(9) // random number
                 coords = getTableroPosition(pos)
                 val empty = isPositionEmpty( coords )
             }while (! empty && coords!= null)
-        }*/
+        }
 
 
         return coords
@@ -353,7 +357,7 @@ class GameViewModel : ViewModel() {
         val y = position.second
         val posValue = _tablero[x][y]
 
-        Log.d("Is pos empty? pos", "$posValue , coords: $x, $y")
+        Log.d("Is casilla empty? pos", "$posValue , coords: $x, $y")
 
         if( posValue.isNullOrBlank() ){
         return true
