@@ -1,10 +1,12 @@
 package com.example.tresenraya.screens.game
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -43,11 +45,13 @@ class GameFragment : Fragment() {
     private fun gameFinished(){
         Log.i("GameFragment", "Game has just finished")
 
-        viewModel.onGameFinishComplete()
-        val action =
-            GameFragmentDirections.actionGameFragmentToScoreFragment()
+        //val builder = AlertDialog.Builder(Ma)
 
-        //action.score = viewModel.score.value ?: 0
+        viewModel.onGameFinishComplete()
+        //val bundle = Bundle()
+        //bundle.putInt("score",200)
+        val action = GameFragmentDirections.actionGameFragmentToScoreFragment()
+
         NavHostFragment.findNavController(this).navigate(action)
     }
 

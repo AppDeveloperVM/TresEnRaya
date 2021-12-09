@@ -7,11 +7,20 @@ import android.os.Looper
 import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import androidx.databinding.Bindable
+import androidx.databinding.BindingAdapter
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.example.tresenraya.R
 import java.util.*
+import android.widget.TextView
+import androidx.databinding.adapters.Converters
+
 
 class GameViewModel : ViewModel() {
 
@@ -45,6 +54,10 @@ class GameViewModel : ViewModel() {
     private val _btns = MutableLiveData(Array(9) { Color.parseColor("#b2a8ba") })
     val btns : LiveData<Array<Int>>
         get() = _btns
+
+    private val _btn1 = MutableLiveData<Int>( )
+    val btn1 : LiveData<Int>
+        get() = _btn1
 
     private val _pyEnabled = MutableLiveData<Boolean>()
     val pyEnabled : LiveData<Boolean>
@@ -98,7 +111,6 @@ class GameViewModel : ViewModel() {
             }
         }
 
-
         startGame()
         timer.start()
     }
@@ -132,12 +144,13 @@ class GameViewModel : ViewModel() {
 
 
             //checking for gameEnded , if not , next Turn
-            if (_gameEnded.value != true && _casillasVacias.value!! > 1) {
+            if (_gameEnded.value != true || _casillasVacias.value!! > 0) {
                 val id = get_casilla_id(machinePos)
                 Log.d("casilla: ", "${_btns.value?.get(id)}" )
 
-                _btns.value?.set(3,Color.parseColor("#FF0000"))
-                Log.d("button color changed", "${_btns.value?.get(id)}" )
+                _btns.value?.set(2,Color.BLACK)// cambio a color ROJO
+                Log.d("Turno, button changed", "${_btns.value?.get(id) }" )
+
 
                 setTableroMove(machinePos)
             } else {
@@ -147,7 +160,11 @@ class GameViewModel : ViewModel() {
 
         },machineTurnTime) // miliseconds
 
+
+
     }
+
+
 
     private fun checkTurn(){
         if(_turn.value!! >= 2) _turn.value = 0

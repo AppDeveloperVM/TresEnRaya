@@ -17,6 +17,7 @@ class ScoreViewModel(finalScore: Int) : ViewModel() {
 
     init {
         Log.i("ScoreViewModel", "Final score is $finalScore")
+        _score.value = 3
     }
 
     fun onPlayAgain() {
