@@ -157,7 +157,7 @@ class GameViewModel : ViewModel() {
     }
 
     private fun nextTurn() {
-        if(_gameEnded.value != true){
+        if(_gameEnded.value != true && _casillasVacias.value!! > 0){
 
 
             if(_turn.value == 0){
@@ -166,6 +166,8 @@ class GameViewModel : ViewModel() {
                 machineTurn()
             }
 
+        }else{
+            onGameFinish()
         }
 
     }
