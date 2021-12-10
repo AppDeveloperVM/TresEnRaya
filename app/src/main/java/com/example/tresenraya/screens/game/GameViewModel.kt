@@ -36,8 +36,8 @@ class GameViewModel : ViewModel() {
     val gameEnded: LiveData<Boolean>
         get() = _gameEnded
 
-    private var _winner = MutableLiveData("")
-    val winner: LiveData<String>
+    private var _winner = MutableLiveData(0)
+    val winner: LiveData<Int>
         get() = _winner
 
     private var _winnerN = MutableLiveData<Int>()
@@ -309,8 +309,8 @@ class GameViewModel : ViewModel() {
         areEqual( _tablero[0][2], _tablero[1][1], _tablero[2][0], symbol  )
         ){
 
-        _winnerN.value = _turn.value
-        _winner.value = players[_turn.value!!]
+        _winner.value = _turn.value
+        //_winner.value = players[_turn.value!!]
         Log.d("turn", "WINNER : $winner")
 
             return true

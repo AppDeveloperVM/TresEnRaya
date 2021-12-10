@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class ScoreViewModel(finalScore: Int) : ViewModel() {
+class ScoreViewModel(finalScore: Int,winner: Int) : ViewModel() {
     // The final score
     private val _score = MutableLiveData<Int>(finalScore)
     val score: LiveData<Int>
@@ -15,7 +15,7 @@ class ScoreViewModel(finalScore: Int) : ViewModel() {
     val finalScore: LiveData<String>
         get() = _finalScore
 
-    private val _winner = MutableLiveData<Int>(40)
+    private val _winner = MutableLiveData<Int>(winner)
     val winner: LiveData<Int>
         get() = _winner
 
@@ -37,7 +37,7 @@ class ScoreViewModel(finalScore: Int) : ViewModel() {
         }
 
         Log.i("ScoreViewModel", "Final score is ${_score.value}")
-        Log.i("Winner", " is ${_winnerText.value}")
+        Log.i("Winner", " is ${_winner.value}")
         _winnerText.value = "Winner is ${_winnerText.value}"
     }
 
