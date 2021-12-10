@@ -34,20 +34,15 @@ class GameViewModel : ViewModel() {
 
     private val _gameEnded = MutableLiveData<Boolean>(false)
     val gameEnded: LiveData<Boolean>
-            get() = _gameEnded
+        get() = _gameEnded
 
-    private var winner: String = ""
+    private var _winner = MutableLiveData("")
+    val winner: LiveData<String>
+        get() = _winner
 
-    /*
-    private val _tablero: MutableLiveData<List<String>> by lazy {
-        MutableLiveData<List<String>>().apply {
-            value = emptyList()
-        }
-    }
-
-    val tablero : LiveData<List<String>>
-        get() = _tablero
-     */
+    private var _winnerN = MutableLiveData<Int>()
+    val winnerN : LiveData<Int>
+        get() = _winnerN
 
     private var _tablero = Array(filas) { arrayOfNulls<String>(columnas) }
     private val players = arrayOf("Jugador","Maquina")
@@ -75,13 +70,9 @@ class GameViewModel : ViewModel() {
 
     private val machineTurnTime: Long = 1000
 
-
-
     private val _score = MutableLiveData<Int>(0)
     val score: LiveData<Int>
         get() = _score
-
-
 
     private val _eventGameFinished = MutableLiveData<Boolean>(false)
     val eventGameFinished: LiveData<Boolean>
@@ -317,7 +308,9 @@ class GameViewModel : ViewModel() {
         ||
         areEqual( _tablero[0][2], _tablero[1][1], _tablero[2][0], symbol  )
         ){
-        winner = players[_turn.value!!]
+
+        _winnerN.value = _turn.value
+        _winner.value = players[_turn.value!!]
         Log.d("turn", "WINNER : $winner")
 
             return true

@@ -19,12 +19,30 @@
         tools:context=".screens.score.ScoreFragment">
 
         <TextView
+            android:id="@+id/final_score_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="sans-serif"
+            android:text="@{scoreViewModel.score}"
+            android:textColor="@color/black_text_color"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toTopOf="@+id/score_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.246"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
             android:id="@+id/you_scored_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:fontFamily="sans-serif"
-            android:text="@string/you_scored"
+            android:text="@{scoreViewModel.winnerText}"
             android:textColor="@color/black_text_color"
             android:textSize="14sp"
             android:textStyle="normal"
@@ -39,18 +57,16 @@
             android:id="@+id/score_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:text=""
+            android:layout_marginBottom="216dp"
             android:fontFamily="sans-serif"
+            android:text=""
             android:textColor="@color/black_text_color"
             android:textSize="34sp"
             android:textStyle="normal"
             app:layout_constraintBottom_toTopOf="@+id/play_again_button"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/you_scored_text"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="40" />
 

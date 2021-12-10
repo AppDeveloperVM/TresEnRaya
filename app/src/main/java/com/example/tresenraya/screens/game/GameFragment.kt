@@ -45,13 +45,10 @@ class GameFragment : Fragment() {
     private fun gameFinished(){
         Log.i("GameFragment", "Game has just finished")
 
-        //val builder = AlertDialog.Builder(Ma)
-
         viewModel.onGameFinishComplete()
-        //val bundle = Bundle()
-        //bundle.putInt("score",200)
         val action = GameFragmentDirections.actionGameFragmentToScoreFragment()
-
+        action.score = viewModel.score.value ?: 0
+        action.winner = viewModel.winner.value.toString()
         NavHostFragment.findNavController(this).navigate(action)
     }
 
