@@ -33,7 +33,7 @@ class ScoreViewModel(finalScore: Int,winner: Int) : ViewModel() {
             _finalScore.value = "Ganaste!"
         }else if(_winner.value==0){
             _winnerText.value = "IA"
-            _finalScore.value = "Has perdido.."
+            _finalScore.value = "Has perdido.. "
         }else if(_winner.value==3){
             _winnerText.value = "No hay ganador."
             _finalScore.value = "Empate!"
