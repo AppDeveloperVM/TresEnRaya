@@ -135,7 +135,7 @@ class GameViewModel : ViewModel() {
 
 
             //checking for gameEnded , if not , next Turn
-            if (_gameEnded.value != true || _casillasVacias.value!! > 0) {
+            if (_gameEnded.value == false && _casillasVacias.value!! > 0) {
                 val id = get_casilla_id(machinePos)
                 Log.d("casilla: ", "${_btns.value?.get(id)}" )
 
@@ -401,15 +401,17 @@ class GameViewModel : ViewModel() {
         checkTurn()
     }
 
-    private fun onGameFinish() {
-        _eventGameFinished.value = true
-        _gameEnded.value = true
-    }
+
 
     fun onNewGame(){
         initTablero()
         restartTablero()
         turnoInicial()
+    }
+
+    fun onGameFinish() {
+        _eventGameFinished.value = true
+        _gameEnded.value = true
     }
 
     fun onGameFinishComplete() {

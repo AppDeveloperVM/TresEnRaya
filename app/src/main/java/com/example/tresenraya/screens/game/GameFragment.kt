@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.example.tresenraya.R
 import com.example.tresenraya.databinding.GameFragmentBinding
 
@@ -49,7 +50,8 @@ class GameFragment : Fragment() {
         val action = GameFragmentDirections.actionGameFragmentToScoreFragment()
         action.score = viewModel.score.value ?: 0
         action.winner = viewModel.winner.value ?: 0
-        NavHostFragment.findNavController(this).navigate(action)
+        findNavController(this).navigate(action)
+        viewModel.onGameFinishComplete()
     }
 
 
