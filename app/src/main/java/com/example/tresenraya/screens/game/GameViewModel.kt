@@ -409,7 +409,12 @@ class GameViewModel : ViewModel() {
         turnoInicial()
     }
 
+    private fun setScoreValue(): Int? {
+        return _currentTime.value?.toInt()
+    }
+
     fun onGameFinish() {
+        _score.value = setScoreValue()
         _eventGameFinished.value = true
         _gameEnded.value = true
     }
@@ -426,6 +431,10 @@ class GameViewModel : ViewModel() {
         private const val ONE_SECOND = 1_000L
 
         private const val COUNTDOWN_TIME = 60_000L
+
+        private const val LOW_SCORE = 15_000L
+        private const val MID_SCORE = 35_000L
+        private const val HIGH_SCORE = 45_000L
 
     }
 

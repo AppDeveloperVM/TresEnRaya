@@ -29,16 +29,16 @@ class ScoreViewModel(finalScore: Int,winner: Int) : ViewModel() {
 
     init {
         if(_winner.value==0){
-            _winnerText.value = "el jugador"
-            _finalScore.value = "Has perdido.."
-        }else{
-            _winnerText.value = "máquina"
+            _winnerText.value = "JUGADOR"
             _finalScore.value = "Ganaste!"
+        }else{
+            _winnerText.value = "IA"
+            _finalScore.value = "Has perdido.."
         }
 
         Log.i("ScoreViewModel", "Final score is ${_score.value}")
         Log.i("Winner", " is ${_winner.value}")
-        _winnerText.value = "Winner is ${_winnerText.value}"
+        _winnerText.value = "${_winnerText.value}"
     }
 
     fun onPlayAgain() {
