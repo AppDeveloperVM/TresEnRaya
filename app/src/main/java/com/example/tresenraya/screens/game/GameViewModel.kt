@@ -36,7 +36,7 @@ class GameViewModel : ViewModel() {
     val gameEnded: LiveData<Boolean>
         get() = _gameEnded
 
-    private var _winner = MutableLiveData(0)
+    private var _winner = MutableLiveData(3)
     val winner: LiveData<Int>
         get() = _winner
 
@@ -402,15 +402,14 @@ class GameViewModel : ViewModel() {
     }
 
 
+    private fun setScoreValue(): Int? {
+        return _currentTime.value?.toInt()
+    }
 
     fun onNewGame(){
         initTablero()
         restartTablero()
         turnoInicial()
-    }
-
-    private fun setScoreValue(): Int? {
-        return _currentTime.value?.toInt()
     }
 
     fun onGameFinish() {
