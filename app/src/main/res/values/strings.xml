@@ -20,7 +20,7 @@
     <string name="difficulty_header">Difficulty</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
+    <string name="player_name">Player Name</string>
     <string name="reply_title">Default reply action</string>
 
     <!-- Sync Preferences -->
