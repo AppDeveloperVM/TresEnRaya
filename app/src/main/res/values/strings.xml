@@ -5,6 +5,7 @@
     <string name="you_scored">You Scored</string>
     <string name="title_text">Tres en Raya</string>
     <string name="play_button">Play</string>
+    <string name="settings_button">Settings</string>
     <string name="get_ready">Get ready to</string>
     <string name="got_it">Got it</string>
     <string name="end_game">End game</string>
@@ -12,5 +13,21 @@
 
     <string name="quote_format">\"%s\"</string>
     <string name="score_format">Current Score: %d</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+    <!-- Dificulty Titles -->
+    <string name="difficulty_header">Difficulty</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
 </resources>
