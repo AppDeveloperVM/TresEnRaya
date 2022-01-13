@@ -3,6 +3,9 @@ package com.example.tresenraya.screens.settings
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
@@ -40,6 +43,15 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
 
+        if(key == "dark_mode"){
+            val value = sharedPreferences!!.getBoolean(key, false)
+            if(value){
+                AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
+            }else if(!value){
+                AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
+            }
+            //AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
+        }
     }
 
 
