@@ -11,6 +11,8 @@ import android.widget.Toast
 import java.util.*
 import android.os.Handler
 import android.os.Looper
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import kotlin.collections.ArrayList
 
 
@@ -20,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
     }
 
 
