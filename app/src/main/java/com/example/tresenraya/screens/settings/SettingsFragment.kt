@@ -26,12 +26,13 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
-        //Log.d(TAG, "${preference?.key}")
+        Log.d("INFO", "${preference?.key}")
         return super.onPreferenceTreeClick(preference)
     }
 
 
     override fun onResume() {
+        Log.i("HELP",preferenceManager.sharedPreferencesName);
         super.onResume()
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
     }
@@ -43,15 +44,13 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
 
-        if(key == "dark_mode"){
-            val value = sharedPreferences!!.getBoolean(key, false)
-            if(value){
-                AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
-            }else if(!value){
-                AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
+        if(key == "darkmode"){
+            when (sharedPreferences?.getBoolean(key, false)){
+                true -> AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES);
+                false -> AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO);
             }
-            //AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
         }
+        Log.d("MODE", "${sharedPreferences?.getBoolean(key, false)}")
     }
 
 

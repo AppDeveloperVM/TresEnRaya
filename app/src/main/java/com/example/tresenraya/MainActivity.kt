@@ -12,6 +12,7 @@ import java.util.*
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import kotlin.collections.ArrayList
 
@@ -19,10 +20,24 @@ import kotlin.collections.ArrayList
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
+        AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES);
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(getSharedPreferences("cat.copernic.vicm.tresenrayaa_preferences", MODE_PRIVATE).getBoolean("darkmode", false)){
+            AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES);
+        }else{
+            AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO);
+        }
     }
 
 
