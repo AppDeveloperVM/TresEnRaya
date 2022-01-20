@@ -145,6 +145,7 @@ class GameViewModel : ViewModel() {
 
                 setTableroMove(machinePos)
             } else {
+                _winner.value = 2
                 _gameEnded.value = true
                 onGameFinish()
             }

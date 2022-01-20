@@ -31,17 +31,17 @@ class ScoreViewModel(finalScore: Int,winner: Int) : ViewModel() {
         if(_winner.value==0){
             _winnerText.value = "JUGADOR"
             _finalScore.value = "Ganaste!"
-        }else if(_winner.value==0){
+        }else if(_winner.value==1){
             _winnerText.value = "IA"
             _finalScore.value = "Has perdido.. "
-        }else if(_winner.value==3){
+        }else if(_winner.value==3 || _winner.value==2 ){
             _winnerText.value = "No hay ganador."
             _finalScore.value = "Empate!"
         }
 
         Log.i("ScoreViewModel", "Final score is ${_score.value}")
         Log.i("Winner", " is ${_winner.value}")
-        _winnerText.value = "${_winnerText.value}"
+        //_winnerText.value = "${_winnerText.value}"
     }
 
     fun onPlayAgain() {
