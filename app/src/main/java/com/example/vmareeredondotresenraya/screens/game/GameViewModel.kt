@@ -1,4 +1,4 @@
-package com.example.tresenraya.screens.game
+package com.example.vmareeredondotresenraya.screens.game
 
 import android.graphics.Color
 import android.os.CountDownTimer
@@ -7,19 +7,11 @@ import android.os.Looper
 import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import androidx.databinding.Bindable
-import androidx.databinding.BindingAdapter
-import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.example.tresenraya.R
 import java.util.*
-import android.widget.TextView
-import androidx.databinding.adapters.Converters
 
 
 class GameViewModel : ViewModel() {

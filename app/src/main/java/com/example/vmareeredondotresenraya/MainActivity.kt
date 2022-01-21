@@ -1,19 +1,9 @@
-package com.example.tresenraya
+package com.example.vmareeredondotresenraya
 
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
-import java.util.*
-import android.os.Handler
-import android.os.Looper
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
-import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {

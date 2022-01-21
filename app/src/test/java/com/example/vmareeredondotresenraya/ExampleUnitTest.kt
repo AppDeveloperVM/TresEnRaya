@@ -1,4 +1,4 @@
-package com.example.tresenraya
+package com.example.vmareeredondotresenraya
 
 import org.junit.Test
 

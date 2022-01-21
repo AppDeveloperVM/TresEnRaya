@@ -1,4 +1,4 @@
-package com.example.tresenraya
+package com.example.vmareeredondotresenraya
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

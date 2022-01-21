@@ -1,4 +1,4 @@
-package com.example.tresenraya.screens.score
+package com.example.vmareeredondotresenraya.screens.score
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

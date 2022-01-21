@@ -1,4 +1,4 @@
-package com.example.tresenraya.screens.title
+package com.example.vmareeredondotresenraya.screens.title
 
 import androidx.lifecycle.ViewModel
 

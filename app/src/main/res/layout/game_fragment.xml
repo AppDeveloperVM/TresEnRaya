@@ -7,7 +7,7 @@
 
         <variable
             name="gameViewModel"
-            type="com.example.tresenraya.screens.game.GameViewModel" />
+            type="com.example.vmareeredondotresenraya.screens.game.GameViewModel" />
         <import type="android.R"/>
         <import type="android.R.color"/>
 

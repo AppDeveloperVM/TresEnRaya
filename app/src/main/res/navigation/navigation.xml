@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/titleFragment"
-        android:name="com.example.tresenraya.screens.title.TitleFragment"
+        android:name="com.example.vmareeredondotresenraya.screens.title.TitleFragment"
         android:label="title_fragment"
         tools:layout="@layout/title_fragment" >
         <action
@@ -24,7 +24,7 @@
     </fragment>
     <fragment
         android:id="@+id/gameFragment"
-        android:name="com.example.tresenraya.screens.game.GameFragment"
+        android:name="com.example.vmareeredondotresenraya.screens.game.GameFragment"
         android:label="GameFragment" >
         <action
             android:id="@+id/action_gameFragment_to_scoreFragment"
@@ -43,7 +43,7 @@
     </fragment>
     <fragment
         android:id="@+id/scoreFragment"
-        android:name="com.example.tresenraya.screens.score.ScoreFragment"
+        android:name="com.example.vmareeredondotresenraya.screens.score.ScoreFragment"
         android:label="score_fragment"
         tools:layout="@layout/score_fragment" >
         <argument
@@ -62,7 +62,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.tresenraya.screens.settings.SettingsFragment"
+        android:name="com.example.vmareeredondotresenraya.screens.settings.SettingsFragment"
         android:label="SettingsFragment" >
         <action
             android:id="@+id/action_settingsFragment_to_titleFragment"

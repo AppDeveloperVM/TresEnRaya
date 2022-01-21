@@ -1,4 +1,4 @@
-package com.example.tresenraya.screens.title
+package com.example.vmareeredondotresenraya.screens.title
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.tresenraya.R
-import com.example.tresenraya.databinding.TitleFragmentBinding
+import com.example.vmareeredondotresenraya.R
+import com.example.vmareeredondotresenraya.databinding.TitleFragmentBinding
 
 class TitleFragment : Fragment() {
 

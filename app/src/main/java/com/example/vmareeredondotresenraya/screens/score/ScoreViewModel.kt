@@ -1,4 +1,4 @@
-package com.example.tresenraya.screens.score
+package com.example.vmareeredondotresenraya.screens.score
 
 import android.util.Log
 import androidx.lifecycle.LiveData

@@ -1,4 +1,4 @@
-package com.example.tresenraya.screens.score
+package com.example.vmareeredondotresenraya.screens.score
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.tresenraya.R
-import com.example.tresenraya.databinding.ScoreFragmentBinding
+import com.example.vmareeredondotresenraya.R
+import com.example.vmareeredondotresenraya.databinding.ScoreFragmentBinding
 
 class ScoreFragment : Fragment() {
 
