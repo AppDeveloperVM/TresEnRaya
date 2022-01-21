@@ -5,10 +5,16 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import androidx.core.app.ActivityCompat.recreate
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import com.example.vmareeredondotresenraya.MainActivity
 import com.example.vmareeredondotresenraya.R
+import android.content.Intent
+
+
+
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener  {
 
@@ -49,6 +55,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             }else if(!value){
                 AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
             }
+
+
+
             //AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
         }
     }

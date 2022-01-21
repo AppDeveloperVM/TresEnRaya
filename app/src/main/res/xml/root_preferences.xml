@@ -12,7 +12,7 @@
         <ListPreference
             app:entries="@array/difficulty_entries"
             app:key="reply"
-            app:title="@string/reply_title"
+            app:title="@string/difficulty_header"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
             android:defaultValue="false"
