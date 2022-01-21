@@ -24,12 +24,15 @@ import androidx.databinding.adapters.Converters
 
 class GameViewModel : ViewModel() {
 
+
     private val filas: Int = 3
     private val columnas: Int = 3
     private val totalCasillas : Int = filas * columnas
     private val _casillasVacias = MutableLiveData<Int>(totalCasillas)
     val casillasVacias : LiveData<Int>
         get() = _casillasVacias
+
+
 
 
     private val _gameEnded = MutableLiveData<Boolean>(false)
@@ -44,19 +47,25 @@ class GameViewModel : ViewModel() {
     val winnerN : LiveData<Int>
         get() = _winnerN
 
-    private var _tablero = Array(filas) { arrayOfNulls<String>(columnas) }
+    public var _tablero = Array(filas) { arrayOfNulls<String>(columnas) }
+    var tablero : Array<Array<String?>> = _tablero
+
     private val players = arrayOf("Jugador","Maquina")
-    private val _btns = MutableLiveData(Array(9) { Color.parseColor("#b2a8ba") })
+    private val _btns = MutableLiveData(Array(9) { 0 })
     val btns : LiveData<Array<Int>>
         get() = _btns
 
-    private val _btn1 = MutableLiveData<Int>( )
+    private val _btn1 = MutableLiveData<Int>(0)
     val btn1 : LiveData<Int>
         get() = _btn1
 
     private val _pyEnabled = MutableLiveData<Boolean>()
     val pyEnabled : LiveData<Boolean>
         get() = _pyEnabled
+
+    private val _machine_position = MutableLiveData<Boolean>()
+    val machine_position : LiveData<Boolean>
+        get() = _machine_position
 
     private val _actualPlayer = MutableLiveData<String>()
     val actualPlayer : LiveData<String>
@@ -78,11 +87,17 @@ class GameViewModel : ViewModel() {
     val eventGameFinished: LiveData<Boolean>
         get() = _eventGameFinished
 
+    private val _turnoIA = MutableLiveData<Int>()
+    val turnoIA: LiveData<Int> = _turnoIA
+
     private val _currentTime = MutableLiveData<Long>()
     private val currentTime: LiveData<Long>
         get() = _currentTime
 
     private val timer: CountDownTimer
+
+
+    data class Casillas(val posicion: Int, val symbol: String)
 
     val currentTimeString: LiveData<String> = Transformations.map(currentTime) { time ->
         DateUtils.formatElapsedTime(time)
@@ -90,6 +105,8 @@ class GameViewModel : ViewModel() {
 
 
     init {
+
+
 
         timer = object : CountDownTimer(COUNTDOWN_TIME, ONE_SECOND){
 
@@ -126,6 +143,9 @@ class GameViewModel : ViewModel() {
     private fun machineTurn(){
         _pyEnabled.value = false
 
+
+        //@{gameViewModel.btns[0].equals(1) ? @color/white : @color/selected_red_color}"
+
         Handler(Looper.getMainLooper()).postDelayed({
             var machinePos: Pair<Int, Int> = Pair(0, 0)
 
@@ -139,7 +159,9 @@ class GameViewModel : ViewModel() {
                 val id = get_casilla_id(machinePos)
                 Log.d("casilla: ", "${_btns.value?.get(id)}" )
 
-                _btns.value?.set(2,Color.BLACK)// cambio a color ROJO
+                _btns.value?.set(0,id)// cambio a color ROJO
+                _turnoIA.value = id
+
                 Log.d("Turno, button changed", "${_btns.value?.get(id) }" )
 
 

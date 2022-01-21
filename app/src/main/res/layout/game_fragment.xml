@@ -8,6 +8,9 @@
         <variable
             name="gameViewModel"
             type="com.example.tresenraya.screens.game.GameViewModel" />
+        <import type="android.R"/>
+        <import type="android.R.color"/>
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,7 +28,7 @@
             android:foregroundGravity="center"
             android:enabled="@{gameViewModel.pyEnabled }"
             android:onClick="@{(v) -> gameViewModel.onPlayerMove(v)}"
-            android:backgroundTint="@{ gameViewModel.btns[0] }"
+            android:backgroundTint="@{gameViewModel.btns[0]}"
             android:tag="0"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="@+id/guideline4" />
@@ -196,12 +199,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="128dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="32dp"
             android:onClick="@{(v) -> gameViewModel.onNewGame()}"
             android:text="New Game"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintHorizontal_bias="0.973"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.constraintlayout.widget.Guideline

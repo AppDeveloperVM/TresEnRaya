@@ -1,6 +1,7 @@
 package com.example.tresenraya.screens.game
 
 import android.app.AlertDialog
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,7 +10,9 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.map
 import androidx.navigation.fragment.NavHostFragment
 import com.example.tresenraya.R
 import com.example.tresenraya.databinding.GameFragmentBinding
@@ -18,6 +21,9 @@ class GameFragment : Fragment() {
 
     private lateinit var binding: GameFragmentBinding
     private lateinit var viewModel: GameViewModel
+    private lateinit var buttons: Array<View>
+    //var tablero = Array<Int>(9) { 0 }
+    var tablero = Array(3) { arrayOfNulls<String>(3) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,14 +37,42 @@ class GameFragment : Fragment() {
             false
         )
 
+        buttons = arrayOf(
+            binding.button1,
+            binding.button2,
+            binding.button3,
+            binding.button4,
+            binding.button5,
+            binding.button6,
+            binding.button7,
+            binding.button8,
+            binding.button9
+        )
+
         viewModel = ViewModelProvider(this)[GameViewModel::class.java]
 
         binding.gameViewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        tablero = viewModel._tablero ?: Array(3) { arrayOfNulls<String>(3) }
+
+
+        viewModel.turnoIA.observe(viewLifecycleOwner,
+            Observer{
+                IA(it);
+            }
+        );
+
+
         viewModel.eventGameFinished.observe(viewLifecycleOwner,
             { hasFinished -> if (hasFinished) gameFinished() })
 
         return binding.root
+    }
+
+
+    fun IA(position: Int) {
+        buttons[position].setBackgroundColor(Color.parseColor("#f44336"))
     }
 
 
