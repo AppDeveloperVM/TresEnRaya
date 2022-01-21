@@ -90,6 +90,9 @@ class GameViewModel : ViewModel() {
     private val _turnoIA = MutableLiveData<Int>()
     val turnoIA: LiveData<Int> = _turnoIA
 
+    private val _restartTablero = MutableLiveData<Boolean>()
+    val restartTablero: LiveData<Boolean> = _restartTablero
+
     private val _currentTime = MutableLiveData<Long>()
     private val currentTime: LiveData<Long>
         get() = _currentTime
@@ -433,6 +436,8 @@ class GameViewModel : ViewModel() {
         initTablero()
         restartTablero()
         turnoInicial()
+        _restartTablero.value = true
+        timer.start()
     }
 
     fun onGameFinish() {

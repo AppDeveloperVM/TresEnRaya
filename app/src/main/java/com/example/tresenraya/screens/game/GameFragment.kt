@@ -63,6 +63,11 @@ class GameFragment : Fragment() {
             }
         );
 
+        viewModel.restartTablero.observe(viewLifecycleOwner,
+            Observer{
+               restartTablero()
+            }
+        );
 
         viewModel.eventGameFinished.observe(viewLifecycleOwner,
             { hasFinished -> if (hasFinished) gameFinished() })
@@ -75,6 +80,11 @@ class GameFragment : Fragment() {
         buttons[position].setBackgroundColor(Color.parseColor("#f44336"))
     }
 
+    fun restartTablero(){
+        for (button in buttons){
+            button.setBackgroundColor(Color.parseColor("#606060"))
+        }
+    }
 
     private fun gameFinished(){
         Log.i("GameFragment", "Game has just finished")
